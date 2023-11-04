@@ -6,6 +6,7 @@ use regex::Regex;
 mod dictionary;
 // mod waffle;
 mod beehive;
+mod grid;
 
 fn main() -> Result<()> {
     let start = Instant::now();

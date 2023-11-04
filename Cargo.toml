@@ -1,0 +1,14 @@
+[package]
+name = "beehive"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+regex = "1.9.6"
+quick-xml = { version = "0.21", features = [ "serialize" ] }
+serde = { version = "1.0", features = [ "derive" ] }
+serde_derive = "1.0.144"
+derivative = "2.2.0"
+rand = "0.8.5"

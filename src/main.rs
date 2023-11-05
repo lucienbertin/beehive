@@ -1,34 +1,44 @@
-use std::{fs::File, io::{Read, Result, BufReader, Write}, time::Instant};
+use std::{fs::File, result::Result, io::{Read, BufReader, Write}, time::Instant, env};
 
 use beehive::Beehive;
 use regex::Regex;
 
-mod dictionary;
+pub mod dictionary;
 // mod waffle;
-mod beehive;
-mod grid;
+pub mod beehive;
+pub mod grid;
 
-fn main() -> Result<()> {
+fn main() -> Result<(), ()> {
+    let args: Vec<String> = env::args().collect();
+    let input = &args[1];
+    // println!("{:?}", args);
+    // let mut input = String::new();
+    // println!("size of the wanted grid:");
+    // let b1 = std::io::stdin().read_line(&mut input).unwrap();
+    // input = input.replace("\n", "");
+    let size: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
+
     let start = Instant::now();
 
-    gen_beehive()?;
+    println!("generating a {}x{} grid", size, size);
+    let res = gen_grid(size)?;
 
     let elapsed = start.elapsed();
-    println!("beehive generated in {:?}", elapsed);
+    println!("{}", res);
+    println!("generated in {:?}", elapsed);
 
     Ok(())
 }
 
-fn gen_beehive() -> std::io::Result<()> {
+fn gen_beehive() -> Result<(), ()> {
     let dictionary = dictionary::Dictionary::new()?;
 
     let empty_beehive = beehive::MediumBeehive::gen_empty();
 
-    let res = beehive::recursive_generate(&dictionary, empty_beehive, 0);
+    let res = beehive::_recursive_generate(&dictionary, empty_beehive, 0);
 
     match res {
-        Some(mut beehive) => {
-            beehive.shuffle();
+        Some(beehive) => {
             println!("{:?}", beehive);
             println!("{}", beehive);
         },
@@ -38,7 +48,20 @@ fn gen_beehive() -> std::io::Result<()> {
     Ok(())
 }
 
-fn _parse_whole_xml() -> std::io::Result<()> {
+fn gen_grid(size: usize) -> Result<grid::Grid, ()> {
+    let dictionary = dictionary::Dictionary::new().unwrap();
+
+    let empty = grid::Grid::new(size, size);
+
+    let full = empty.recursive_generate(&dictionary, 0, grid::Kind::Row);
+
+    match full {
+        Some(g) => Ok(g),
+        None => Err(()),
+    }
+} 
+
+fn _parse_whole_xml() -> std::result::Result<(), ()> {
     let start = Instant::now();
     let docs = open_xml("samples/enwiktionary-latest-abstract.xml")?;
     let elapsed = start.elapsed();
@@ -120,8 +143,8 @@ pub struct Doc {
     pub abs: String,
 }
 
-pub fn open_xml(file_path: &str) -> Result<Vec<Doc>> {
-    let file = File::open(file_path)?;
+pub fn open_xml(file_path: &str) -> Result<Vec<Doc>, ()> {
+    let file = File::open(file_path).map_err(|_e| ())?;
     let reader = BufReader::new(file);
 
     let feed: Feed = quick_xml::de::from_reader(reader).unwrap();
@@ -129,7 +152,7 @@ pub fn open_xml(file_path: &str) -> Result<Vec<Doc>> {
     Ok(feed.docs)
 }
 
-pub fn filter_lang(docs: &Vec<Doc>, lang: &str) -> Result<Vec<String>> {
+pub fn filter_lang(docs: &Vec<Doc>, lang: &str) -> Result<Vec<String>, ()> {
     let filtered_docs = docs
         .into_iter()
         .filter(|d| d.abs.as_str() == lang)
@@ -139,16 +162,16 @@ pub fn filter_lang(docs: &Vec<Doc>, lang: &str) -> Result<Vec<String>> {
     Ok(filtered_docs)
 }
 
-pub fn open_file(path: &str) -> Result<String> {
-    let file = File::open(path)?;
+pub fn open_file(path: &str) -> Result<String, ()> {
+    let file = File::open(path).map_err(|_e| ())?;
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
-    buf_reader.read_to_string(&mut contents)?;
+    buf_reader.read_to_string(&mut contents).map_err(|_e| ())?;
 
     Ok(contents)
 }
 
-pub fn extract_words(contents: String) -> Result<Vec<String>> {
+pub fn extract_words(contents: String) -> Result<Vec<String>, ()> {
     let mut split = contents.split('\n');
     split.next(); // remove header line
 
@@ -170,7 +193,7 @@ pub fn extract_words(contents: String) -> Result<Vec<String>> {
     Ok(words)
 }
 
-pub fn clean_up(words: &Vec<String>) -> Result<Vec<String>> {
+pub fn clean_up(words: &Vec<String>) -> Result<Vec<String>, ()> {
     // let lower_case_only = Regex::new(r"^[a-z]+$").unwrap();
     // let all_case = Regex::new(r"^[a-zA-Z]+$").unwrap();
     let entry_reg = Regex::new(r"^Wiktionary: [a-zA-Z]+$").unwrap();
@@ -185,7 +208,7 @@ pub fn clean_up(words: &Vec<String>) -> Result<Vec<String>> {
     Ok(clean_words)
 }
 
-pub fn filter_len(words: &Vec<String>, len: usize) -> Result<Vec<String>> {
+pub fn filter_len(words: &Vec<String>, len: usize) -> Result<Vec<String>, ()> {
     let correct_len = words
         .into_iter().filter(|w| w.len() == len)
         .map(|s| String::from(s))
@@ -194,7 +217,7 @@ pub fn filter_len(words: &Vec<String>, len: usize) -> Result<Vec<String>> {
     Ok(correct_len)
 }
 
-pub fn get_max_len(words:&Vec<String>) -> Result<usize> {
+pub fn get_max_len(words:&Vec<String>) -> Result<usize, ()> {
     let mut max_len = 0;
     for word in words {
         max_len = std::cmp::max(max_len, word.len());
@@ -203,11 +226,11 @@ pub fn get_max_len(words:&Vec<String>) -> Result<usize> {
     Ok(max_len)
 }
 
-pub fn write_dictionary(path: &str, words:&Vec<String>) -> Result<()> {
-    let mut file = File::create(path)?;
+pub fn write_dictionary(path: &str, words:&Vec<String>) -> Result<(), ()> {
+    let mut file = File::create(path).map_err(|_e| ())?;
     for word in words {
-        file.write_all(word.as_bytes())?;
-        file.write_all(b"\n")?;
+        file.write_all(word.as_bytes()).map_err(|_e| ())?;
+        file.write_all(b"\n").map_err(|_e| ())?;
     };
 
     Ok(())
@@ -221,7 +244,7 @@ mod test {
     use crate::{open_file, extract_words, clean_up, filter_len, get_max_len, write_dictionary, open_xml, filter_lang};
 
     #[test]
-    fn parse_300_lines() -> std::io::Result<()> {
+    fn parse_300_lines() -> std::result::Result<(), ()> {
         let start = Instant::now();
 
         let contents = open_file("samples/300-first-lines")?;
@@ -239,7 +262,7 @@ mod test {
         Ok(())
     }
     #[test]
-    fn parse_100k_lines() -> std::io::Result<()> {
+    fn parse_100k_lines() -> std::result::Result<(), ()> {
         let start = Instant::now();
 
         let contents = open_file("samples/100k-first-lines")?;
@@ -259,7 +282,7 @@ mod test {
     }
 
     #[test]
-    fn parse_2m_lines() -> std::io::Result<()> {
+    fn parse_2m_lines() -> std::result::Result<(), ()> {
         let start = Instant::now();
 
         let contents = open_file("samples/2M-first-lines")?;
@@ -301,7 +324,7 @@ mod test {
     }
 
     #[test]
-    fn extract_all_language_entries() -> std::io::Result<()> {
+    fn extract_all_language_entries() -> std::result::Result<(), ()> {
         let start = Instant::now();
 
         let contents = open_file("samples/enwiktionary-latest-all-titles")?;
@@ -348,7 +371,7 @@ mod test {
     }
 
     #[test]
-    fn parse_test_xml() -> std::io::Result<()> {
+    fn parse_test_xml() -> std::result::Result<(), ()> {
         let docs = open_xml("samples/test.xml")?;
         let en_words = filter_lang(&docs, "==English==")?;
         for word in &en_words {
@@ -358,7 +381,7 @@ mod test {
         Ok(())
     }
     #[test]
-    fn parse_whole_xml() -> std::io::Result<()> {
+    fn parse_whole_xml() -> std::result::Result<(), ()> {
         let start = Instant::now();
         let docs = open_xml("samples/enwiktionary-latest-abstract.xml")?;
         let elapsed = start.elapsed();
@@ -373,7 +396,7 @@ mod test {
     }
 
     #[test]
-    fn test_substring() -> std::io::Result<()> {
+    fn test_substring() -> std::result::Result<(), ()> {
         let word = "Wiktionary: lol".to_string();
         let word = word.as_str()[12..].to_string();
 

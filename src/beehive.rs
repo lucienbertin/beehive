@@ -25,7 +25,7 @@ pub trait Beehive {
     }
 }
 
-pub fn recursive_generate<B: Beehive + Clone>(dictionary: &Dictionary, beehive: B, depth: i32) -> Option<B> {
+pub fn _recursive_generate<B: Beehive + Clone>(dictionary: &Dictionary, beehive: B, depth: i32) -> Option<B> {
     // beehive invalid
     if beehive.has_duplicates() {
         return None;
@@ -42,7 +42,7 @@ pub fn recursive_generate<B: Beehive + Clone>(dictionary: &Dictionary, beehive: 
         let mut candidates = common_candidates;
 
         if depth > 8 {
-            let all_candidates = &dictionary.find_all_candidates(pattern).unwrap_or(vec![]);
+            let all_candidates = &dictionary._find_all_candidates(pattern).unwrap_or(vec![]);
             let mut all_candidates = all_candidates.clone();
             all_candidates.shuffle(&mut thread_rng());
     
@@ -50,16 +50,12 @@ pub fn recursive_generate<B: Beehive + Clone>(dictionary: &Dictionary, beehive: 
         }
 
         let mut candidates = candidates.into_iter();
-        let mut i = 0;
 
         while let Some(candidate) = candidates.next() {
-            // i = i+1;
-            // if depth < 3 {
-            //     println!("depth {} candidate {}", depth, i);
-            // }
+
             let mut incr_beehive = beehive.clone();
             incr_beehive.push_word(candidate);
-            if let Some(solved_waffle) = recursive_generate(dictionary, incr_beehive, depth + 1) {
+            if let Some(solved_waffle) = _recursive_generate(dictionary, incr_beehive, depth + 1) {
                 return Some(solved_waffle);
             }
         };
@@ -170,13 +166,11 @@ impl fmt::Display for SmallBeehive {
 pub struct MediumBeehive {
     // size 3 cells
     words: Vec<String>,
-    shuffled_letters: Vec<char>,
 }
 impl Beehive for MediumBeehive {
     fn gen_empty() -> Self {
         Self {
             words: vec![],
-            shuffled_letters: vec![],
         }
     }
     fn get_words(&self) -> Vec<String> {
@@ -203,45 +197,10 @@ impl Beehive for MediumBeehive {
         pattern
     }
 }
-impl MediumBeehive {
-    pub fn shuffle(&mut self) {
-        let mut letters: Vec<char> = vec![];
-        letters.push(self.get_char(0,0));
-        letters.push(self.get_char(0,1));
-        letters.push(self.get_char(0,2));
-        letters.push(self.get_char(0,3));
-
-        letters.push(self.get_char(1,0));
-        letters.push(self.get_char(8,1));
-        letters.push(self.get_char(4,3));
-
-        letters.push(self.get_char(6,0));
-        letters.push(self.get_char(6,1));
-        letters.push(self.get_char(6,2));
-        letters.push(self.get_char(6,3));
-
-        letters.push(self.get_char(2,2));
-        letters.push(self.get_char(4,1));
-
-        letters.push(self.get_char(3,0));
-        letters.push(self.get_char(3,1));
-
-        letters.shuffle(&mut thread_rng());
-
-        self.shuffled_letters = letters;
-    }
-}
 impl fmt::Display for MediumBeehive {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f, "\
-            | {} {} {} {}\n\
-            |{}   {}   {}\n\
-            | {} {} {} {}\n\
-            |  {}   {}\n\
-            |   {} {}\n\
-            |\n\
-            | shuffled :\n\
             | {} {} {} {}\n\
             |{}   {}   {}\n\
             | {} {} {} {}\n\
@@ -252,11 +211,6 @@ impl fmt::Display for MediumBeehive {
             self.words[6].chars().nth(0).unwrap(), self.words[6].chars().nth(1).unwrap(), self.words[6].chars().nth(2).unwrap(), self.words[6].chars().nth(3).unwrap(),
             self.words[2].chars().nth(2).unwrap(), self.words[4].chars().nth(1).unwrap(),
             self.words[3].chars().nth(0).unwrap(), self.words[3].chars().nth(1).unwrap(),
-            self.shuffled_letters[0], self.shuffled_letters[1], self.shuffled_letters[2], self.shuffled_letters[3],
-            self.shuffled_letters[4], self.shuffled_letters[5], self.shuffled_letters[6], 
-            self.shuffled_letters[7], self.shuffled_letters[8], self.shuffled_letters[9], self.shuffled_letters[10],
-            self.shuffled_letters[11], self.shuffled_letters[12],
-            self.shuffled_letters[13], self.shuffled_letters[14],
         )
     }
 }

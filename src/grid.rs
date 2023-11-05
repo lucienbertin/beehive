@@ -225,7 +225,7 @@ impl fmt::Display for Grid {
                 &self.get_row(i)
                     .unwrap_or(String::from(""))
                     .replace('\0', ".")
-                    .replace('_', "▆")
+                    .replace('_', "▓")
                     .as_str()
                     .to_uppercase()
                 )?;

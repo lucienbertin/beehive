@@ -14,10 +14,15 @@ fn main() -> Result<(), ()> {
     // let input = &args[1];
     // println!("{:?}", args);
     let mut input = String::new();
-    println!("size of the wanted grid:");
+    println!("number of rows:");
     let b1 = std::io::stdin().read_line(&mut input).unwrap();
     input = input.replace("\n", "");
-    let size: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
+    let rows: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
+    let mut input = String::new();
+    println!("number of cols:");
+    let b1 = std::io::stdin().read_line(&mut input).unwrap();
+    input = input.replace("\n", "");
+    let cols: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
 
     let mut input = String::new();
     println!("number of threads:");
@@ -27,12 +32,13 @@ fn main() -> Result<(), ()> {
 
     let mut handles = vec![];
     for i in 0..thread_cnt {
-        let s = *&size;
+        let r = *&rows;
+        let c = *&cols;
         let thread_index = *&i;
         let handle = std::thread::spawn(move || {
             let start = Instant::now();
-            println!("generating a {}x{} grid on thread {}", s, s, thread_index);
-            let res = gen_grid(s).unwrap();
+            println!("generating a {}x{} grid on thread {}", r,c, thread_index);
+            let res = gen_grid(r, c).unwrap();
         
             let elapsed = start.elapsed();
             println!("{}", res);
@@ -67,12 +73,12 @@ fn gen_beehive() -> Result<(), ()> {
     Ok(())
 }
 
-fn gen_grid(size: usize) -> Result<grid::Grid, ()> {
+fn gen_grid(rows: usize, cols: usize) -> Result<grid::Grid, ()> {
     let dictionary = dictionary::Dictionary::new().unwrap();
 
-    let empty = grid::Grid::new(size, size);
+    let empty = grid::Grid::new(rows, cols);
 
-    let full = empty.recursive_generate(&dictionary, 0, grid::Kind::Row);
+    let full = empty.recursive_generate(&dictionary);
 
     match full {
         Some(g) => Ok(g),

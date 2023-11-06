@@ -7,25 +7,44 @@ pub mod dictionary;
 // mod waffle;
 pub mod beehive;
 pub mod grid;
+pub mod grid_beehive;
 
 fn main() -> Result<(), ()> {
-    let args: Vec<String> = env::args().collect();
-    let input = &args[1];
+    // let args: Vec<String> = env::args().collect();
+    // let input = &args[1];
     // println!("{:?}", args);
-    // let mut input = String::new();
-    // println!("size of the wanted grid:");
-    // let b1 = std::io::stdin().read_line(&mut input).unwrap();
-    // input = input.replace("\n", "");
+    let mut input = String::new();
+    println!("size of the wanted grid:");
+    let b1 = std::io::stdin().read_line(&mut input).unwrap();
+    input = input.replace("\n", "");
     let size: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
 
-    let start = Instant::now();
+    let mut input = String::new();
+    println!("number of threads:");
+    let b1 = std::io::stdin().read_line(&mut input).unwrap();
+    input = input.replace("\n", "");
+    let thread_cnt: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
 
-    println!("generating a {}x{} grid", size, size);
-    let res = gen_grid(size)?;
+    let mut handles = vec![];
+    for i in 0..thread_cnt {
+        let s = *&size;
+        let thread_index = *&i;
+        let handle = std::thread::spawn(move || {
+            let start = Instant::now();
+            println!("generating a {}x{} grid on thread {}", s, s, thread_index);
+            let res = gen_grid(s).unwrap();
+        
+            let elapsed = start.elapsed();
+            println!("{}", res);
+            println!("generated in {:?} on thread {}", elapsed, thread_index);
+        });
 
-    let elapsed = start.elapsed();
-    println!("{}", res);
-    println!("generated in {:?}", elapsed);
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        let _r = handle.join();
+    }
 
     Ok(())
 }

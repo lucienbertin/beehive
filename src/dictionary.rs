@@ -81,6 +81,12 @@ impl Dictionary {
     // }
 
     pub fn find_common_candidates(&self, pattern: String) -> Result<Vec<String>, ()> {
+        if pattern == ".".to_string() {
+            return Ok(vec![".".to_string()]);
+        }
+        if pattern == "_".to_string() {
+            return Ok(vec!["_".to_string()]);
+        }
         let candidates = self.common_words
             .clone()
             .into_iter()
@@ -102,7 +108,10 @@ impl Dictionary {
     }
 
     pub fn recursive_find_candidates(&self, pattern: String) -> Result<Vec<String>, ()> {
-        let res = if pattern.contains('_') {
+
+        let res = if pattern == "_".to_string() {
+            self.find_common_candidates(pattern)
+        } else if pattern.contains('_') {
             let index = pattern.find('_').unwrap();
             if index == 0 {
                 let sub_pattern = (&pattern.clone()).chars().into_iter().skip(1).collect();
@@ -164,20 +173,24 @@ impl Dictionary {
     }
 
     pub fn has_forbidden_tuples(&self, pattern: String) -> Result<bool, ()> {
-        let any_forbidden_duo = (0..(&pattern.len()-1))
-            .into_iter()
-            .map(|i| String::from(&pattern.as_str()[i..i+2]))
-            .filter(|d| !d.contains('\0'))
-            .filter(|d| !d.contains('_'))
-            .any(|d| self.forbidden_tuples.contains(&d));
-
-        let any_forbidden_trio = (0..(pattern.len()-2))
-            .into_iter()
-            .map(|i| String::from(&pattern.as_str()[i..i+3]))
-            .filter(|d| !d.contains('\0'))
-            .filter(|d| !d.contains('_'))
-            .any(|d| self.forbidden_tuples.contains(&d));
-
+        let mut any_forbidden_duo = false;
+        if pattern.len() > 1 {
+            any_forbidden_duo = (0..(&pattern.len()-1))
+                .into_iter()
+                .map(|i| String::from(&pattern.as_str()[i..i+2]))
+                .filter(|d| !d.contains('\0'))
+                .filter(|d| !d.contains('_'))
+                .any(|d| self.forbidden_tuples.contains(&d));
+        };
+        let mut any_forbidden_trio = false;
+        if pattern.len() > 2 {
+            any_forbidden_trio = (0..(pattern.len()-2))
+                .into_iter()
+                .map(|i| String::from(&pattern.as_str()[i..i+3]))
+                .filter(|d| !d.contains('\0'))
+                .filter(|d| !d.contains('_'))
+                .any(|d| self.forbidden_tuples.contains(&d));
+        };
         Ok(any_forbidden_duo || any_forbidden_trio)
     }
 }

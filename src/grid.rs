@@ -1,6 +1,9 @@
+use rand::{seq::SliceRandom, thread_rng, Rng};
 use simple_matrix::Matrix;
-use std::{fmt, collections::{HashSet, VecDeque}};
-use rand::{thread_rng, seq::SliceRandom, Rng};
+use std::{
+    collections::{HashSet, VecDeque},
+    fmt,
+};
 
 use crate::dictionary::Dictionary;
 
@@ -35,7 +38,7 @@ impl Grid {
             resolved_lines: vec![],
         }
     }
-    
+
     pub fn rows(&self) -> usize {
         self.layout.rows()
     }
@@ -65,7 +68,7 @@ impl Grid {
             Kind::Col => self.get_col(line.index),
         }
     }
-    
+
     // setters
     pub fn set_cell(&mut self, row: usize, col: usize, val: char) {
         self.layout.set(row, col, val);
@@ -80,12 +83,12 @@ impl Grid {
     pub fn set_row(&mut self, row: usize, val: String) {
         for (col, char) in val.chars().enumerate() {
             self.set_cell(row, col, char);
-        };
+        }
     }
     pub fn set_col(&mut self, col: usize, val: String) {
         for (row, char) in val.chars().enumerate() {
             self.set_cell(row, col, char);
-        };
+        }
     }
 
     pub fn flag_resolved(&mut self, line: &Line) {
@@ -93,10 +96,16 @@ impl Grid {
     }
     pub fn next_line(&self) -> Option<Line> {
         let rows: Vec<Line> = (0..self.rows())
-            .map(|i| Line { index: i, kind: Kind::Row })
+            .map(|i| Line {
+                index: i,
+                kind: Kind::Row,
+            })
             .collect();
         let cols: Vec<Line> = (0..self.cols())
-            .map(|i| Line { index: i, kind: Kind::Col })
+            .map(|i| Line {
+                index: i,
+                kind: Kind::Col,
+            })
             .collect();
         let lines = [rows.as_slice(), cols.as_slice()].concat();
 
@@ -104,7 +113,7 @@ impl Grid {
             .into_iter()
             .filter(|l| !self.resolved_lines.contains(l))
             .collect();
-        
+
         unresolved_lines.sort_by(|line_a, line_b| {
             let val_a = self.get_line(line_a).unwrap().replace('\0', ".");
             let val_b = self.get_line(line_b).unwrap().replace('\0', ".");
@@ -125,7 +134,7 @@ impl Grid {
             // most constrained first
             match constrains_b.cmp(&constrains_a) {
                 std::cmp::Ordering::Equal => liberties_b.cmp(liberties_a),
-                res => res
+                res => res,
             }
         });
 
@@ -134,18 +143,14 @@ impl Grid {
 
     // incr
     pub fn pattern(&self, line: &Line) -> Option<String> {
-        self
-            .get_line(line)
-            .map(|s| s.replace('\0', "."))
+        self.get_line(line).map(|s| s.replace('\0', "."))
     }
-    
+
     pub fn is_invalid(&self, dictionary: &Dictionary) -> bool {
-        self.has_duplicates()
-        || self.has_forbidden_tupples(dictionary)
-        || self.has_isles()
+        self.has_duplicates() || self.has_forbidden_tupples(dictionary) || self.has_isles()
     }
     pub fn has_duplicates(&self) -> bool {
-        let mut words_set: HashSet<String>  = HashSet::new();
+        let mut words_set: HashSet<String> = HashSet::new();
 
         for i in 0..self.layout.rows() {
             let words = self.get_row(i).unwrap_or(String::from("\0"));
@@ -161,8 +166,8 @@ impl Grid {
                     return true;
                 }
                 words_set.insert(word);
-            };
-        };
+            }
+        }
 
         for j in 0..self.layout.cols() {
             let words = self.get_col(j).unwrap_or(String::from("\0"));
@@ -178,8 +183,8 @@ impl Grid {
                     return true;
                 }
                 words_set.insert(word);
-            };
-        };
+            }
+        }
 
         false
     }
@@ -213,12 +218,11 @@ impl Grid {
         // find an anchor
         let mut rng = rand::thread_rng();
         let mut anchor = Cell { row: 0, col: 0 };
-        for r in 0..self.rows() {
-            for c in 0..self.cols() {
-                if self.get_cell(r, c).is_some() && self.get_cell(r, c).unwrap() != &'_' {
-                    anchor = Cell {row: r, col: c};
-                }
-            }
+        while self.get_cell(anchor.row, anchor.col).unwrap_or(&'_') == &'_' {
+            anchor = Cell {
+                row: rng.gen_range(0..self.rows()),
+                col: rng.gen_range(0..self.cols()),
+            };
         }
 
         let mut visit_queue = VecDeque::new();
@@ -231,16 +235,28 @@ impl Grid {
             // find neighbours
             let mut neighbours = vec![];
             if cell.row > 0 {
-                let top = Cell { row: cell.row - 1, col: cell.col };
+                let top = Cell {
+                    row: cell.row - 1,
+                    col: cell.col,
+                };
                 neighbours.push(top);
             }
             if cell.col > 0 {
-                let left = Cell { row: cell.row, col: cell.col - 1 };
+                let left = Cell {
+                    row: cell.row,
+                    col: cell.col - 1,
+                };
                 neighbours.push(left);
             }
-            let bottom = Cell { row: cell.row + 1, col: cell.col };
+            let bottom = Cell {
+                row: cell.row + 1,
+                col: cell.col,
+            };
             neighbours.push(bottom);
-            let right = Cell { row: cell.row, col: cell.col + 1 };
+            let right = Cell {
+                row: cell.row,
+                col: cell.col + 1,
+            };
             neighbours.push(right);
 
             // add unvisited neighbours to the visit_queue
@@ -249,7 +265,7 @@ impl Grid {
                 .filter(|n| self.get_cell(n.row, n.col).is_some())
                 .filter(|n| !visited_cells.contains(&n))
                 .for_each(|n| visit_queue.push_front(n));
-        };
+        }
 
         visited_cells.len() < self.rows() * self.cols()
     }
@@ -258,7 +274,7 @@ impl Grid {
         for c in 0..self.layout.cols() {
             for o in 0..1 {
                 if self.get_cell(c + o, c).unwrap_or(&'\0') == &'\0' {
-                    return 2*c + o;
+                    return 2 * c + o;
                 }
             }
         }
@@ -282,14 +298,15 @@ impl Grid {
         let next_pattern = self.pattern(&next_line);
 
         if let Some(pattern) = next_pattern {
-    
             // strict layout
             // let common_candidates = &dictionary.recursive_find_candidates(pattern.clone()).unwrap_or(vec![]);
             // allow the algo to add blanks
-            let common_candidates = &dictionary.find_candidates_allow_split(pattern.clone()).unwrap_or(vec![]);
+            let common_candidates = &dictionary
+                .find_candidates_allow_split(pattern.clone())
+                .unwrap_or(vec![]);
             let mut common_candidates = common_candidates.clone();
             common_candidates.shuffle(&mut thread_rng());
-    
+
             let candidates = common_candidates;
             let mut candidates = candidates.into_iter();
 
@@ -301,12 +318,12 @@ impl Grid {
                 if let Some(complete_grid) = incr_grid.recursive_generate(dictionary) {
                     return Some(complete_grid);
                 }
-            };
+            }
         } else {
             // grid full
             return Some(self.clone());
         }
-    
+
         // no grid found
         None
     }
@@ -314,22 +331,28 @@ impl Grid {
 
 impl fmt::Display for Grid {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let border: String = (0..self.layout.cols()+2).map(|_i| '─').collect();
-        write!(f, "grid of size {}x{}\n", self.layout.rows(), self.layout.cols())?;
+        let border: String = (0..self.layout.cols() + 2).map(|_i| '─').collect();
+        write!(
+            f,
+            "grid of size {}x{}\n",
+            self.layout.rows(),
+            self.layout.cols()
+        )?;
         write!(f, "┌{}┐\n", &border)?;
         for i in 0..self.layout.rows() {
-            write!(f,
+            write!(
+                f,
                 "│ {} │\n",
-                &self.get_row(i)
+                &self
+                    .get_row(i)
                     .unwrap_or(String::from(""))
                     .replace('\0', ".")
                     .replace('_', "▓")
                     .as_str()
                     .to_uppercase()
-                )?;
-        };
+            )?;
+        }
         write!(f, "└{}┘", &border)
-
     }
 }
 #[cfg(test)]
@@ -339,7 +362,7 @@ mod test {
 
     use crate::dictionary;
 
-    use super::{Grid};
+    use super::Grid;
 
     #[test]
     fn gen_grid() {
@@ -367,7 +390,6 @@ mod test {
         // grid.set(2, 1, 'r');
         // grid.set(2, 2, '◼');
 
-
         // let pattern = &grid.next_pattern(0, Kind::Row);
         // println!("{:?}", pattern);
 
@@ -380,16 +402,17 @@ mod test {
 
     #[test]
     fn invalid_grid() {
-        let mut grid = Grid::new(2,2);
-        grid.set_cell(0,0, '_');
-        grid.set_cell(0,1, 'a');
-        grid.set_cell(1,0, '_');
-        grid.set_cell(1,1, '_');
+        let mut grid = Grid::new(2, 2);
+        grid.set_cell(0, 0, '_');
+        grid.set_cell(0, 1, 'a');
+        grid.set_cell(1, 0, '_');
+        grid.set_cell(1, 1, '_');
 
         let has_isolated = grid.has_isles();
 
         println!("{}", has_isolated);
-    }    #[test]
+    }
+    #[test]
     fn invalid_grid_2() {
         // let mut grid = Grid::new(2,2);
         // grid.set_cell(0,1, '_');
@@ -409,11 +432,11 @@ mod test {
         // println!("{}", grid);
         // println!("has isles: {}", has_isles);
 
-        let mut grid = Grid::new(4,4);
-        grid.set_row(0,".._.".to_string());
-        grid.set_row(1,".___".to_string());
-        grid.set_row(2,".._.".to_string());
-        grid.set_row(3,"_...".to_string());
+        let mut grid = Grid::new(4, 4);
+        grid.set_row(0, ".._.".to_string());
+        grid.set_row(1, ".___".to_string());
+        grid.set_row(2, ".._.".to_string());
+        grid.set_row(3, "_...".to_string());
 
         let has_isles = grid.has_isles();
 

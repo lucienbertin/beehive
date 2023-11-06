@@ -1,6 +1,9 @@
+use rand::{seq::SliceRandom, thread_rng, Rng};
 use simple_matrix::Matrix;
-use std::{fmt, collections::HashSet};
-use rand::{thread_rng, seq::SliceRandom};
+use std::{
+    collections::{HashSet, VecDeque},
+    fmt,
+};
 
 use crate::dictionary::Dictionary;
 
@@ -16,7 +19,11 @@ pub enum Kind {
     Col,
     Diag,
 }
-
+#[derive(Clone, PartialEq, Eq, Hash)]
+pub struct Cell {
+    row: usize,
+    col: usize,
+}
 #[derive(Clone, Debug, PartialEq)]
 pub struct Line {
     index: usize,
@@ -65,8 +72,8 @@ impl GridBeehive {
             return None;
         }
 
-        let res: String = (0..(diag+1))
-            .map(|i| self.get_cell(diag-i, i))
+        let res: String = (0..(diag + 1))
+            .map(|i| self.get_cell(diag - i, i))
             .filter(|opt| opt.is_some())
             .map(|opt| opt.unwrap())
             .collect();
@@ -92,12 +99,12 @@ impl GridBeehive {
     pub fn set_row(&mut self, row: usize, val: String) {
         for (col, char) in val.chars().enumerate() {
             self.set_cell(row, col, char);
-        };
+        }
     }
     pub fn set_col(&mut self, col: usize, val: String) {
         for (row, char) in val.chars().enumerate() {
             self.set_cell(row, col, char);
-        };
+        }
     }
     pub fn set_diag(&mut self, diag: usize, val: String) {
         // convert usize to i32 for substracting below 0
@@ -107,10 +114,9 @@ impl GridBeehive {
         let offset: usize = i_offset.try_into().unwrap();
 
         for (i, char) in val.chars().enumerate() {
-            self.set_cell(diag - i -offset, i + offset, char);
-        };
+            self.set_cell(diag - i - offset, i + offset, char);
+        }
     }
-
 
     pub fn flag_resolved(&mut self, line: &Line) {
         self.resolved_lines.push(line.clone());
@@ -122,19 +128,29 @@ impl GridBeehive {
             Kind::Row => self.get_row(line.index),
             Kind::Col => self.get_col(line.index),
             Kind::Diag => self.get_diag(line.index),
-        }.map(|s| s.replace('\0', "."));
+        }
+        .map(|s| s.replace('\0', "."));
 
         res
     }
     pub fn next_line(&self) -> Option<Line> {
         let rows: Vec<Line> = (0..self.rows())
-            .map(|i| Line { index: i, kind: Kind::Row })
+            .map(|i| Line {
+                index: i,
+                kind: Kind::Row,
+            })
             .collect();
         let cols: Vec<Line> = (0..self.cols())
-            .map(|i| Line { index: i, kind: Kind::Col })
+            .map(|i| Line {
+                index: i,
+                kind: Kind::Col,
+            })
             .collect();
         let diags: Vec<Line> = (0..self.diags())
-            .map(|i| Line { index: i, kind: Kind::Diag })
+            .map(|i| Line {
+                index: i,
+                kind: Kind::Diag,
+            })
             .collect();
 
         let lines = [rows.as_slice(), cols.as_slice(), diags.as_slice()].concat();
@@ -143,7 +159,7 @@ impl GridBeehive {
             .into_iter()
             .filter(|l| !self.resolved_lines.contains(l))
             .collect();
-        
+
         unresolved_lines.sort_by(|line_a, line_b| {
             let val_a = self.get_line(line_a).unwrap().replace('\0', ".");
             let val_b = self.get_line(line_b).unwrap().replace('\0', ".");
@@ -164,7 +180,7 @@ impl GridBeehive {
             // most constrained first
             match constrains_b.cmp(&constrains_a) {
                 std::cmp::Ordering::Equal => liberties_b.cmp(liberties_a),
-                res => res
+                res => res,
             }
         });
 
@@ -173,66 +189,59 @@ impl GridBeehive {
 
     // invalid
     pub fn is_invalid(&self, dictionary: &Dictionary) -> bool {
-        self.has_duplicates()
-        || self.has_isolated_letters()
-        || self.has_forbidden_tupples(dictionary)
-        || self.has_isles()
+        self.has_duplicates() || self.has_forbidden_tupples(dictionary) || self.has_isles()
     }
     fn has_duplicates(&self) -> bool {
-        // let mut words_set: HashSet<String>  = HashSet::new();
+        let mut words_set: HashSet<String> = HashSet::new();
 
-        // for i in 0..self.layout.rows() {
-        //     let words = self.get_row(i).unwrap_or(String::from("\0"));
-        //     let words: Vec<String> = words.split('_').map(|w| String::from(w)).collect();
-        //     let words: Vec<String> = words
-        //         .into_iter()
-        //         .filter(|w| w.len() > 1)
-        //         .filter(|w| !w.contains('\0'))
-        //         .collect();
+        for r in 0..self.rows() {
+            let words = self.get_row(r).unwrap_or(String::from("\0"));
+            let words: Vec<String> = words.split('_').map(|w| String::from(w)).collect();
+            let words: Vec<String> = words
+                .into_iter()
+                .filter(|w| w.len() > 1)
+                .filter(|w| !w.contains('\0'))
+                .collect();
 
-        //     for word in words {
-        //         if words_set.contains(&word) {
-        //             return true;
-        //         }
-        //         words_set.insert(word);
-        //     };
-        // };
-
-        // for j in 0..self.layout.cols() {
-        //     let words = self.get_col(j).unwrap_or(String::from("\0"));
-        //     let words: Vec<String> = words.split('_').map(|w| String::from(w)).collect();
-        //     let words: Vec<String> = words
-        //         .into_iter()
-        //         .filter(|w| w.len() > 1)
-        //         .filter(|w| !w.contains('\0'))
-        //         .collect();
-
-        //     for word in words {
-        //         if words_set.contains(&word) {
-        //             return true;
-        //         }
-        //         words_set.insert(word);
-        //     };
-        // };
-
-        false
-    }
-    fn has_isolated_letters(&self) -> bool {
-        for r in 0..self.layout.rows() {
-            for c in 0..self.layout.cols() {
-                let center = self.get_cell(r, c).unwrap_or(&'_');
-                let top = if r == 0 { &'_' } else { self.get_cell(r-1, c).unwrap_or(&'_') };
-                let bottom = self.get_cell(r+1, c).unwrap_or(&'_');
-                let left = if c == 0 { &'_' } else { self.get_cell(r, c-1).unwrap_or(&'_') };
-                let right = self.get_cell(r, c+1).unwrap_or(&'_');
-                let tr = if c == 0 { &'_' } else { self.get_cell(r+1, c-1).unwrap_or(&'_') };
-                let bl = if r == 0 { &'_' } else { self.get_cell(r-1, c+1).unwrap_or(&'_') };
-
-                let neighbours = format!("{}{}{}{}{}{}", top, bottom, left, right, tr, bl);
-
-                if center != &'_' && neighbours == "______".to_string() {
+            for word in words {
+                if words_set.contains(&word) {
                     return true;
                 }
+                words_set.insert(word);
+            }
+        }
+
+        for c in 0..self.cols() {
+            let words = self.get_col(c).unwrap_or(String::from("\0"));
+            let words: Vec<String> = words.split('_').map(|w| String::from(w)).collect();
+            let words: Vec<String> = words
+                .into_iter()
+                .filter(|w| w.len() > 1)
+                .filter(|w| !w.contains('\0'))
+                .collect();
+
+            for word in words {
+                if words_set.contains(&word) {
+                    return true;
+                }
+                words_set.insert(word);
+            }
+        }
+
+        for d in 0..self.diags() {
+            let words = self.get_col(d).unwrap_or(String::from("\0"));
+            let words: Vec<String> = words.split('_').map(|w| String::from(w)).collect();
+            let words: Vec<String> = words
+                .into_iter()
+                .filter(|w| w.len() > 1)
+                .filter(|w| !w.contains('\0'))
+                .collect();
+
+            for word in words {
+                if words_set.contains(&word) {
+                    return true;
+                }
+                words_set.insert(word);
             }
         }
 
@@ -261,19 +270,86 @@ impl GridBeehive {
 
         false
     }
-    fn has_isles(&self) -> bool {
-        // let mut i = 1;
-        // let asd: Matrix<i32> = Matrix::new(self.layout.rows(), self.layout.cols());
+    pub fn has_isles(&self) -> bool {
+        let mut visited_cells: HashSet<Cell> = HashSet::new();
+        // visit all blacks to enforce boundaries
+        for r in 0..self.rows() {
+            for c in 0..self.cols() {
+                if self.get_cell(r, c).is_some() && self.get_cell(r, c).unwrap() == &'_' {
+                    visited_cells.insert(Cell { row: r, col: c });
+                }
+            }
+        }
 
-        // let top_left = self.get_cell(0,0).unwrap_or('\0');
-        false
+        // find an anchor
+        let mut rng = rand::thread_rng();
+        let mut anchor = Cell { row: 0, col: 0 };
+        while self.get_cell(anchor.row, anchor.col).unwrap_or(&'_') == &'_' {
+            anchor = Cell {
+                row: rng.gen_range(0..self.rows()),
+                col: rng.gen_range(0..self.cols()),
+            };
+        }
+        let mut visit_queue = VecDeque::new();
+        visit_queue.push_front(anchor);
+
+        while let Some(cell) = visit_queue.pop_back() {
+            // visit cell
+            visited_cells.insert(cell.clone());
+
+            // find neighbours
+            let mut neighbours = vec![];
+            if cell.row > 0 {
+                let top = Cell {
+                    row: cell.row - 1,
+                    col: cell.col,
+                };
+                neighbours.push(top);
+                let top_right = Cell {
+                    row: cell.row - 1,
+                    col: cell.col + 1,
+                };
+                neighbours.push(top_right);
+            }
+            if cell.col > 0 {
+                let left = Cell {
+                    row: cell.row,
+                    col: cell.col - 1,
+                };
+                neighbours.push(left);
+                let bottom_left = Cell {
+                    row: cell.row + 1,
+                    col: cell.col - 1,
+                };
+                neighbours.push(bottom_left);
+            }
+            let bottom = Cell {
+                row: cell.row + 1,
+                col: cell.col,
+            };
+            neighbours.push(bottom);
+            let right = Cell {
+                row: cell.row,
+                col: cell.col + 1,
+            };
+            neighbours.push(right);
+
+            // add unvisited neighbours to the visit_queue
+            neighbours
+                .into_iter()
+                .filter(|n| self.get_cell(n.row, n.col).is_some()) // only keep cells that are in the grid
+                .filter(|n| !visited_cells.contains(&n)) // and that aren't visited yet
+                .for_each(|n| visit_queue.push_front(n));
+        }
+
+        visited_cells.len() < self.rows() * self.cols()
     }
 
     fn _get_depth(&self) -> usize {
         for c in 0..self.layout.cols() {
             for o in 0..1 {
                 if self.get_cell(c + o, c).unwrap_or(&'\0') == &'\0' {
-                    return 2*c + o;
+                    return 2 * c + o;
                 }
             }
         }
@@ -300,14 +376,15 @@ impl GridBeehive {
         // println!("{:?}", next_pattern);
 
         if let Some(pattern) = next_pattern {
-    
             // strict layout
             // let common_candidates = &dictionary.recursive_find_candidates(pattern.clone()).unwrap_or(vec![]);
             // allow the algo to add blanks
-            let common_candidates = &dictionary.find_candidates_allow_split(pattern.clone()).unwrap_or(vec![]);
+            let common_candidates = &dictionary
+                .find_candidates_allow_split(pattern.clone())
+                .unwrap_or(vec![]);
             let mut common_candidates = common_candidates.clone();
             common_candidates.shuffle(&mut thread_rng());
-    
+
             let candidates = common_candidates;
             let mut candidates = candidates.into_iter();
 
@@ -319,12 +396,12 @@ impl GridBeehive {
                 if let Some(complete_grid) = incr_grid.recursive_generate(dictionary) {
                     return Some(complete_grid);
                 }
-            };
+            }
         } else {
             // grid full
             return Some(self.clone());
         }
-    
+
         // no grid found
         None
     }
@@ -333,22 +410,28 @@ impl GridBeehive {
 impl fmt::Display for GridBeehive {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // let border: String = (0..(2*self.layout.cols())+1).map(|_i| '─').collect();
-        write!(f, "grid of size {}x{}\n", self.layout.rows(), self.layout.cols())?;
+        write!(
+            f,
+            "grid of size {}x{}\n",
+            self.layout.rows(),
+            self.layout.cols()
+        )?;
         // write!(f, " {} \n", &border)?;
         for i in 0..self.layout.rows() {
             let offset: String = (0..i).map(|_i| ' ').collect();
             write!(f, "{}", offset)?;
             for j in 0..self.layout.cols() {
-                write!(f,
+                write!(
+                    f,
                     "{} ",
-                    self.get_cell(i,j)
+                    self.get_cell(i, j)
                         .unwrap_or(&'\0')
                         .to_string()
                         .replace('\0', "⬡")
                         .replace('_', "⬢")
                         .as_str()
                         .to_uppercase()
-                    )?;
+                )?;
             }
             write!(f, "\n")?;
             // write!(f,
@@ -360,7 +443,7 @@ impl fmt::Display for GridBeehive {
             //         .as_str()
             //         .to_uppercase()
             //     )?;
-        };
+        }
         // let offset: String = (0..self.layout.rows()).map(|_i| ' ').collect();
 
         // write!(f, " {} {} ", offset, &border)
@@ -428,7 +511,7 @@ mod test {
     //     if let Some(g) = full {
     //         println!("{}", g);
     //     }
-    // }   
+    // }
     #[test]
     fn gen_grid_beehive_3() {
         let start = Instant::now();
@@ -436,7 +519,7 @@ mod test {
         let elapsed = start.elapsed();
         println!("dictionary created in {:?}", elapsed);
 
-        let mut empty = GridBeehive::new(3, 6);
+        let mut empty = GridBeehive::new(4, 5);
         // empty.set_row(0, "__..._".to_string());
         // empty.set_row(1, "_._...".to_string());
         // empty.set_row(2, "._._..".to_string());
@@ -463,8 +546,11 @@ mod test {
         let elapsed = start.elapsed();
         println!("dictionary created in {:?}", elapsed);
 
-        let mut empty = GridBeehive::new(2,2);
-        let line = Line { index: 1, kind: Kind::Diag };
+        let mut empty = GridBeehive::new(2, 2);
+        let line = Line {
+            index: 1,
+            kind: Kind::Diag,
+        };
         empty.set_line(&line, "a_".to_string());
         empty.flag_resolved(&line);
         println!("{}", empty);

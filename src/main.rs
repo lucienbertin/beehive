@@ -15,18 +15,18 @@ fn main() -> Result<(), ()> {
     // println!("{:?}", args);
     let mut input = String::new();
     println!("number of rows:");
-    let b1 = std::io::stdin().read_line(&mut input).unwrap();
+    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
     input = input.replace("\n", "");
     let rows: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
     let mut input = String::new();
     println!("number of cols:");
-    let b1 = std::io::stdin().read_line(&mut input).unwrap();
+    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
     input = input.replace("\n", "");
     let cols: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
 
     let mut input = String::new();
     println!("number of threads:");
-    let b1 = std::io::stdin().read_line(&mut input).unwrap();
+    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
     input = input.replace("\n", "");
     let thread_cnt: usize = input.parse().expect(format!("cant parse {} as usize", input).as_str());
 

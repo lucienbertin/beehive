@@ -1,6 +1,6 @@
 use simple_matrix::Matrix;
-use std::{fmt, collections::HashSet};
-use rand::{thread_rng, seq::SliceRandom};
+use std::{fmt, collections::{HashSet, VecDeque}};
+use rand::{thread_rng, seq::SliceRandom, Rng};
 
 use crate::dictionary::Dictionary;
 
@@ -20,6 +20,12 @@ pub enum Kind {
 pub struct Line {
     index: usize,
     kind: Kind,
+}
+
+#[derive(Clone, PartialEq, Eq, Hash)]
+pub struct Cell {
+    row: usize,
+    col: usize,
 }
 
 impl Grid {
@@ -135,7 +141,6 @@ impl Grid {
     
     pub fn is_invalid(&self, dictionary: &Dictionary) -> bool {
         self.has_duplicates()
-        || self.has_isolated_letters()
         || self.has_forbidden_tupples(dictionary)
         || self.has_isles()
     }
@@ -178,25 +183,6 @@ impl Grid {
 
         false
     }
-    pub fn has_isolated_letters(&self) -> bool {
-        for r in 0..self.layout.rows() {
-            for c in 0..self.layout.cols() {
-                let center = self.get_cell(r, c).unwrap_or(&'_');
-                let top = if r == 0 { &'_' } else { self.get_cell(r-1, c).unwrap_or(&'_') };
-                let bottom = self.get_cell(r+1, c).unwrap_or(&'_');
-                let left = if c == 0 { &'_' } else { self.get_cell(r, c-1).unwrap_or(&'_') };
-                let right = self.get_cell(r, c+1).unwrap_or(&'_');
-
-                let neighbours = format!("{}{}{}{}", top, bottom, left, right);
-
-                if center != &'_' && neighbours == "____".to_string() {
-                    return true;
-                }
-            }
-        }
-
-        false
-    }
     pub fn has_forbidden_tupples(&self, dictionary: &Dictionary) -> bool {
         for r in 0..self.layout.rows() {
             let row = self.get_row(r).unwrap_or("".to_string());
@@ -213,13 +199,53 @@ impl Grid {
 
         false
     }
-
     pub fn has_isles(&self) -> bool {
-        // let mut i = 1;
-        // let asd: Matrix<i32> = Matrix::new(self.layout.rows(), self.layout.cols());
+        let mut visited_cells: HashSet<Cell> = HashSet::new();
+        // visit all blacks to enforce boundaries
+        for r in 0..self.rows() {
+            for c in 0..self.cols() {
+                if self.get_cell(r, c).is_some() && self.get_cell(r, c).unwrap() == &'_' {
+                    visited_cells.insert(Cell { row: r, col: c });
+                }
+            }
+        }
 
-        // let top_left = self.get_cell(0,0).unwrap_or('\0');
-        false
+        // find an anchor
+        let mut rng = rand::thread_rng();
+        let mut anchor = Cell { row: 0, col: 0 };
+        while self.get_cell(anchor.row, anchor.col).unwrap_or(&'_') == &'_' {
+            anchor = Cell { row: rng.gen_range(0..self.rows()), col: rng.gen_range(0..self.cols())};
+        }
+        let mut visit_queue = VecDeque::new();
+        visit_queue.push_front(anchor);
+
+        while let Some(cell) = visit_queue.pop_back() {
+            // visit cell
+            visited_cells.insert(cell.clone());
+
+            // find neighbours
+            let mut neighbours = vec![];
+            if cell.row > 0 {
+                let top = Cell { row: cell.row - 1, col: cell.col };
+                neighbours.push(top);
+            }
+            if cell.col > 0 {
+                let left = Cell { row: cell.row, col: cell.col - 1 };
+                neighbours.push(left);
+            }
+            let bottom = Cell { row: cell.row + 1, col: cell.col };
+            neighbours.push(bottom);
+            let right = Cell { row: cell.row, col: cell.col + 1 };
+            neighbours.push(right);
+
+            // add unvisited neighbours to the visit_queue
+            neighbours
+                .into_iter()
+                .filter(|n| !visited_cells.contains(&n))
+                .for_each(|n| visit_queue.push_front(n));
+        };
+
+        visited_cells.len() < self.rows() * self.cols()
     }
 
     fn _get_depth(&self) -> usize {
@@ -307,7 +333,7 @@ mod test {
 
     use crate::dictionary;
 
-    use super::{Grid, Kind};
+    use super::{Grid};
 
     #[test]
     fn gen_grid() {
@@ -357,5 +383,35 @@ mod test {
         let has_isolated = grid.has_isolated_letters();
 
         println!("{}", has_isolated);
+    }    #[test]
+    fn invalid_grid_2() {
+        // let mut grid = Grid::new(2,2);
+        // grid.set_cell(0,1, '_');
+        // grid.set_cell(1,0, '_');
+
+        // let has_isles = grid.has_isles();
+
+        // println!("{}", grid);
+        // println!("has isles: {}", has_isles);
+
+        // let mut grid = Grid::new(2,2);
+        // grid.set_cell(0,0, '_');
+        // grid.set_cell(1,1, '_');
+
+        // let has_isles = grid.has_isles();
+
+        // println!("{}", grid);
+        // println!("has isles: {}", has_isles);
+
+        let mut grid = Grid::new(4,4);
+        grid.set_row(0,".._.".to_string());
+        grid.set_row(1,".___".to_string());
+        grid.set_row(2,".._.".to_string());
+        grid.set_row(3,"_...".to_string());
+
+        let has_isles = grid.has_isles();
+
+        println!("{}", grid);
+        println!("has isles: {}", has_isles);
     }
 }

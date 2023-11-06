@@ -1,5 +1,4 @@
 use std::{
-    env,
     fs::File,
     io::{BufReader, Read, Write},
     result::Result,

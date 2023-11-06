@@ -213,9 +213,14 @@ impl Grid {
         // find an anchor
         let mut rng = rand::thread_rng();
         let mut anchor = Cell { row: 0, col: 0 };
-        while self.get_cell(anchor.row, anchor.col).unwrap_or(&'_') == &'_' {
-            anchor = Cell { row: rng.gen_range(0..self.rows()), col: rng.gen_range(0..self.cols())};
+        for r in 0..self.rows() {
+            for c in 0..self.cols() {
+                if self.get_cell(r, c).is_some() && self.get_cell(r, c).unwrap() != &'_' {
+                    anchor = Cell {row: r, col: c};
+                }
+            }
         }
+
         let mut visit_queue = VecDeque::new();
         visit_queue.push_front(anchor);
 
@@ -241,6 +246,7 @@ impl Grid {
             // add unvisited neighbours to the visit_queue
             neighbours
                 .into_iter()
+                .filter(|n| self.get_cell(n.row, n.col).is_some())
                 .filter(|n| !visited_cells.contains(&n))
                 .for_each(|n| visit_queue.push_front(n));
         };
@@ -380,7 +386,7 @@ mod test {
         grid.set_cell(1,0, '_');
         grid.set_cell(1,1, '_');
 
-        let has_isolated = grid.has_isolated_letters();
+        let has_isolated = grid.has_isles();
 
         println!("{}", has_isolated);
     }    #[test]

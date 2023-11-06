@@ -4,6 +4,8 @@ pub struct Dictionary {
     pub common_words: Vec<String>,
     pub all_words: Vec<String>,
     pub forbidden_tuples: Vec<String>,
+    pub forbidden_starts: Vec<String>,
+    pub forbidden_ends: Vec<String>,
 }
 // pub enum Language {
 //     English,
@@ -17,8 +19,8 @@ impl Dictionary {
         let mut contents = String::new();
         buf_reader.read_to_string(&mut contents)?;
 
-        let mut split = contents.split('\n');
-        split.next(); // remove header line
+        let split = contents.split('\n');
+        // split.next(); // remove header line
     
         let lines = split.collect::<Vec<&str>>();
     
@@ -40,45 +42,63 @@ impl Dictionary {
         let common_words = Dictionary::parse_file("dictionaries/english/most_frequent_words").map_err(|_e| ())?;
         let all_words = Dictionary::parse_file("dictionaries/english/all_words").map_err(|_e| ())?;
         let forbidden_tuples = Dictionary::parse_file("dictionaries/english/forbidden_tuples").map_err(|_e| ())?;
+        let forbidden_starts = Dictionary::parse_file("dictionaries/english/forbidden_starts").map_err(|_e| ())?;
+        let forbidden_ends = Dictionary::parse_file("dictionaries/english/forbidden_ends").map_err(|_e| ())?;
         let dictionary = Self {
             common_words,
             all_words,
             forbidden_tuples,
+            forbidden_starts,
+            forbidden_ends,
         };
 
         Ok(dictionary)
     }
 
-    // fn gen_forbidden_tuples(&mut self) -> Result<(), ()>{
-    //     let mut tuples: Vec<String> = vec![];
-    //     for a in "abcdefghijklmnopqrstuvwxyz".chars() {
-    //         for b in "abcdefghijklmnopqrstuvwxyz".chars() {
-    //             tuples.push(vec![a,b].into_iter().collect());
-    //         }
-    //     }
-    //     for a in "abcdefghijklmnopqrstuvwxyz".chars() {
-    //         for b in "abcdefghijklmnopqrstuvwxyz".chars() {
-    //             for c in "abcdefghijklmnopqrstuvwxyz".chars() {
-    //                 tuples.push(vec![a,b,c].into_iter().collect());
-    //             }
-    //         }
-    //     }
-    //     // let size_2_tuples = vec!["wxyz".to_string(), "ad".to_string()];
+    fn _gen_forbidden_tuples(self) -> Result<(), ()>{
+        let mut tuples: Vec<String> = vec![];
+        for a in "abcdefghijklmnopqrstuvwxyz".chars() {
+            for b in "abcdefghijklmnopqrstuvwxyz".chars() {
+                tuples.push(vec![a,b].into_iter().collect());
+            }
+        }
+        // for a in "abcdefghijklmnopqrstuvwxyz".chars() {
+        //     for b in "abcdefghijklmnopqrstuvwxyz".chars() {
+        //         for c in "abcdefghijklmnopqrstuvwxyz".chars() {
+        //             tuples.push(vec![a,b,c].into_iter().collect());
+        //         }
+        //     }
+        // }
+        // let size_2_tuples = vec!["wxyz".to_string(), "ad".to_string()];
 
-    //     self.forbidden_tuples = tuples
-    //         .into_iter()
-    //         .filter(|t| {
-    //             let exists = self.common_words
-    //                 .clone()
-    //                 .into_iter()
-    //                 .any(|w| w.contains(t.as_str()));
+        // let forbidden_starts = &tuples
+        //     .clone()
+        //     .into_iter()
+        //     .filter(|t| {
+        //         let exists = self.common_words
+        //             .clone()
+        //             .into_iter()
+        //             .any(|w| w.starts_with(t.as_str()));
 
-    //             !exists
-    //         }).collect();
+        //         !exists
+        //     }).collect();
 
-    //     write_dictionary("dictionaries/english/forbidden_tuples", &self.forbidden_tuples);
-    //     Ok(())
-    // }
+        // let forbidden_ends = &tuples
+        //     .clone()
+        //     .into_iter()
+        //     .filter(|t| {
+        //         let exists = self.common_words
+        //             .clone()
+        //             .into_iter()
+        //             .any(|w| w.ends_with(t.as_str()));
+
+        //         !exists
+        //     }).collect();
+
+        // _write_dictionary("dictionaries/english/forbidden_starts", &forbidden_starts)?;
+        // _write_dictionary("dictionaries/english/forbidden_ends", &forbidden_ends)?;
+        Ok(())
+    }
 
     pub fn find_common_candidates(&self, pattern: String) -> Result<Vec<String>, ()> {
         if pattern == ".".to_string() {
@@ -191,7 +211,24 @@ impl Dictionary {
                 .filter(|d| !d.contains('_'))
                 .any(|d| self.forbidden_tuples.contains(&d));
         };
-        Ok(any_forbidden_duo || any_forbidden_trio)
+
+        let any_forbidden_start = pattern
+            .split('_')
+            .filter(|s| s.len() > 2)
+            .map(|s| String::from(s))
+            .map(|s| String::from(&s.as_str()[0..2]))
+            .filter(|s| !s.contains('\0'))
+            .any(|s| self.forbidden_starts.contains(&s));
+
+        let any_forbidden_end = pattern
+            .split('_')
+            .filter(|s| s.len() > 2)
+            .map(|s| String::from(s))
+            .map(|s| String::from(&s.as_str()[(s.len()-2)..(s.len())]))
+            .filter(|s| !s.contains('\0'))
+            .any(|s| self.forbidden_ends.contains(&s));
+
+        Ok(any_forbidden_duo || any_forbidden_trio || any_forbidden_start || any_forbidden_end)
     }
 }
 
@@ -255,9 +292,29 @@ mod test {
     fn test_forbidden_tuples() -> Result<(), ()> {
         let dict = Dictionary::new()?;
 
-        println!("{} forbidden tuples", dict.forbidden_tuples.len());
-        println!("{:?}", dict.forbidden_tuples);
+        dict._gen_forbidden_tuples()?;
+
+        // println!("{} forbidden tuples", dict.forbidden_tuples.len());
+        // println!("{:?}", dict.forbidden_tuples);
 
         Ok(())
     }
+
+    #[test]
+    fn test_has_forbidden_tuples() -> Result<(), ()> {
+        let dict = Dictionary::new()?;
+
+        // dict._gen_forbidden_tuples()?;
+
+        let res = dict.has_forbidden_tuples(".._aj._".to_string());
+
+        println!("{:?}", res);
+
+        // println!("{} forbidden tuples", dict.forbidden_tuples.len());
+        // println!("{:?}", dict.forbidden_tuples);
+
+        Ok(())
+    }
+
+    
 }

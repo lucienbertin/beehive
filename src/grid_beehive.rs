@@ -37,6 +37,87 @@ impl GridBeehive {
             resolved_lines: vec![],
         }
     }
+
+    pub fn new_champfered(rows: usize, cols: usize) -> Self {
+        let mut empty = Self::new(rows, cols);
+        empty.champfer_layout();
+
+        empty
+    }
+    pub fn new_7x7_honeycomb() -> Self {
+        let mut empty = Self::new(7,7);
+        empty.champfer_layout();
+        empty.set_row(1, "__\0___\0".to_string());
+        empty.set_row(3, "\0_\0_\0_\0".to_string());
+        empty.set_row(4, "\0_\0\0_\0_".to_string());
+        empty.set_row(5, "\0_\0_\0__".to_string());
+
+        empty
+    }
+    pub fn new_6x6_honeycomb() -> Self {
+        let mut empty = Self::new(6,6);
+        empty.champfer_layout();
+        empty.set_row(1, "__\0_\0\0".to_string());
+        empty.set_row(2, "\0_\0\0_\0".to_string());
+        empty.set_row(3, "\0_\0\0_\0".to_string());
+        empty.set_row(4, "\0\0_\0__".to_string());
+
+        empty
+    }
+    pub fn new_5x5_honeycomb() -> Self {
+        let mut empty = Self::new(5,5);
+        empty.champfer_layout();
+        empty.set_row(1, "_\0_\0_".to_string());
+        empty.set_row(3, "_\0_\0_".to_string());
+
+        empty
+    }
+
+    pub fn new_5x6_honeycomb() -> Self {
+        let mut empty = Self::new(5,6);
+        empty.set_row(0, "_\0\0\0\0\0".to_string());
+        empty.set_row(1, "\0_\0__\0".to_string());
+        empty.set_row(2, "\0\0\0\0\0\0".to_string());
+        empty.set_row(3, "\0__\0_\0".to_string());
+        empty.set_row(4, "\0\0\0\0\0_".to_string());
+
+        empty
+    }
+    pub fn new_6444_honeycomb() -> Self {
+        let mut empty = Self::new(5,7);
+        empty.set_row(0, "_\0\0\0\0\0\0".to_string());
+        empty.set_row(1, "\0_\0_\0_\0".to_string());
+        empty.set_row(2, "\0\0\0\0\0\0_".to_string());
+        empty.set_row(3, "\0_\0_\0__".to_string());
+        empty.set_row(4, "\0\0\0\0___".to_string());
+
+        empty
+    }
+
+    pub fn new_444_honeycomb() -> Self {
+        let mut empty = Self::new(5,5);
+        empty.set_row(0, "_\0\0\0\0".to_string());
+        empty.set_row(1, "\0_\0_\0".to_string());
+        empty.set_row(2, "\0\0\0\0_".to_string());
+        empty.set_row(3, "\0_\0__".to_string());
+        empty.set_row(4, "\0\0____".to_string());
+
+        empty
+    }
+
+    pub fn champfer_layout(&mut self) {
+        let cnt = (std::cmp::min(self.rows(), self.cols()) - 1)/ 2;
+
+        for d in 0..cnt {
+            let diag = self.get_diag(d).unwrap().replace('\0', "_");
+            self.set_diag(d, diag);
+        }
+
+        for d in (self.diags()-cnt)..self.diags() {
+            let diag = self.get_diag(d).unwrap().replace('\0', "_");
+            self.set_diag(d, diag);
+        }
+    }
     pub fn rows(&self) -> usize {
         self.layout.rows()
     }
@@ -356,7 +437,7 @@ impl GridBeehive {
         0
     }
 
-    pub fn recursive_generate(&self, dictionary: &Dictionary) -> Option<Self> {
+    pub fn recursive_generate(&self, dictionary: &Dictionary, allow_adding_blacks: bool) -> Option<Self> {
         // println!("{}", self);
         let opt_next_line = self.next_line();
         // grid is complete
@@ -376,23 +457,27 @@ impl GridBeehive {
 
         if let Some(pattern) = next_pattern {
             // strict layout
-            // let common_candidates = &dictionary.recursive_find_candidates(pattern.clone()).unwrap_or(vec![]);
-            // allow the algo to add blanks
-            let common_candidates = &dictionary
-                .find_candidates_allow_split(pattern.clone())
-                .unwrap_or(vec![]);
-            let mut common_candidates = common_candidates.clone();
-            common_candidates.shuffle(&mut thread_rng());
+            let mut candidates = if allow_adding_blacks {
+                let candidates_with_blacks = &dictionary
+                    .find_candidates_allow_split(pattern.clone())
+                    .unwrap_or(vec![]);
 
-            let candidates = common_candidates;
-            let mut candidates = candidates.into_iter();
+                candidates_with_blacks.clone()
+            } else {
+                let candidates_without_blacks = &dictionary.recursive_find_candidates(pattern.clone()).unwrap_or(vec![]);
 
-            while let Some(candidate) = candidates.next() {
+                candidates_without_blacks.clone()
+            };
+
+            candidates.shuffle(&mut thread_rng());
+            let mut candidates_iter = candidates.into_iter();
+
+            while let Some(candidate) = candidates_iter.next() {
                 let mut incr_grid = self.clone();
                 incr_grid.set_line(&next_line, candidate);
                 incr_grid.flag_resolved(&next_line);
 
-                if let Some(complete_grid) = incr_grid.recursive_generate(dictionary) {
+                if let Some(complete_grid) = incr_grid.recursive_generate(dictionary, allow_adding_blacks) {
                     return Some(complete_grid);
                 }
             }
@@ -411,7 +496,7 @@ impl fmt::Display for GridBeehive {
         // let border: String = (0..(2*self.layout.cols())+1).map(|_i| '─').collect();
         write!(
             f,
-            "grid of size {}x{}\n",
+            "beehive of size {}x{}\n",
             self.layout.rows(),
             self.layout.cols()
         )?;
@@ -516,7 +601,7 @@ mod test {
 
         println!("initial layout{}", empty);
 
-        let full = empty.recursive_generate(&dictionary);
+        let full = empty.recursive_generate(&dictionary, true);
         let elapsed = start.elapsed();
         println!("grid created in {:?}", elapsed);
         println!("{:?}", full);
@@ -528,10 +613,6 @@ mod test {
 
     #[test]
     fn test_next_line() {
-        let start = Instant::now();
-        let dictionary = dictionary::Dictionary::new().unwrap();
-        let elapsed = start.elapsed();
-        println!("dictionary created in {:?}", elapsed);
 
         let mut empty = GridBeehive::new(2, 2);
         let line = Line {
@@ -544,5 +625,24 @@ mod test {
 
         let line = empty.next_line();
         println!("{:?}", line);
+    }#[test]
+    fn test_champfer() {
+        let empty = GridBeehive::new_7x7_honeycomb();
+        println!("{}", empty);
+
+        let empty = GridBeehive::new_6x6_honeycomb();
+        println!("{}", empty);
+
+        let empty = GridBeehive::new_5x5_honeycomb();
+        println!("{}", empty);
+
+        let empty = GridBeehive::new_5x6_honeycomb();
+        println!("{}", empty);
+
+        let empty = GridBeehive::new_444_honeycomb();
+        println!("{}", empty);
+
+        let empty = GridBeehive::new_6444_honeycomb();
+        println!("{}", empty);
     }
 }

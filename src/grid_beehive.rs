@@ -229,7 +229,7 @@ impl GridBeehive {
         }
 
         for d in 0..self.diags() {
-            let words = self.get_col(d).unwrap_or(String::from("\0"));
+            let words = self.get_diag(d).unwrap_or(String::from("\0"));
             let words: Vec<String> = words.split('_').map(|w| String::from(w)).collect();
             let words: Vec<String> = words
                 .into_iter()
@@ -357,8 +357,7 @@ impl GridBeehive {
     }
 
     pub fn recursive_generate(&self, dictionary: &Dictionary) -> Option<Self> {
-        println!("{}", self);
-
+        // println!("{}", self);
         let opt_next_line = self.next_line();
         // grid is complete
         if opt_next_line.is_none() {
@@ -434,19 +433,7 @@ impl fmt::Display for GridBeehive {
                 )?;
             }
             write!(f, "\n")?;
-            // write!(f,
-            //     "│ {} │\n",
-            //     &self.get_row(i)
-            //         .unwrap_or(String::from(""))
-            //         .replace('\0', ".")
-            //         .replace('_', "⬢")
-            //         .as_str()
-            //         .to_uppercase()
-            //     )?;
         }
-        // let offset: String = (0..self.layout.rows()).map(|_i| ' ').collect();
-
-        // write!(f, " {} {} ", offset, &border)
         write!(f, "")
     }
 }
@@ -519,7 +506,7 @@ mod test {
         let elapsed = start.elapsed();
         println!("dictionary created in {:?}", elapsed);
 
-        let mut empty = GridBeehive::new(4, 5);
+        let mut empty = GridBeehive::new(4,4);
         // empty.set_row(0, "__..._".to_string());
         // empty.set_row(1, "_._...".to_string());
         // empty.set_row(2, "._._..".to_string());

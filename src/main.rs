@@ -49,7 +49,7 @@ fn main() -> Result<(), ()> {
         let handle = std::thread::spawn(move || {
             let start = Instant::now();
             println!("generating a {}x{} grid on thread {}", r, c, thread_index);
-            let res = gen_grid_beehive(r, c).unwrap();
+            let res = gen_grid_beehive(r, c).expect("could not get a working grid");
 
             let elapsed = start.elapsed();
             println!("{}", res);

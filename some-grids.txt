@@ -1,0 +1,514 @@
+┌────────┐
+│ K■THEN │
+│ ERA■WE │
+│ Y■PM■E │
+│ ■MS■CD │
+│ W■■TOE │
+│ I■TOAD │
+│ RAINS■ │
+│ E■NETS │
+└────────┘
+
+
+■ ■ M Y ■ E 
+ ■ I ■ E H ■ 
+  A D ■ S E A 
+   C ■ ■ ■ N ■ 
+    T O A D ■ ■ 
+     ■ H ■ O ■ ■ 
+
+generated in 129.89983675s on thread 5
+beehive of size 6x6
+■ ■ ■ D ■ ■ 
+ ■ H E R ■ ■ 
+  O R ■ Y E S 
+   ■ ■ E ■ ■ O 
+    A H ■ E H ■ 
+     T O ■ W ■ ■ 
+
+generated in 823.338474482s on thread 10
+beehive of size 6x6
+■ ■ ■ S H E 
+ ■ F E E ■ ■ 
+  O Y ■ W O W 
+   ■ I ■ ■ ■ E 
+    H ■ ■ M Y ■ 
+     A N ■ E ■ ■ 
+
+generated in 939.42699917s on thread 4
+beehive of size 6x6
+■ ■ B Y ■ R 
+ ■ ■ A ■ H ■ 
+  O W N ■ O N 
+   ■ E G G ■ ■ 
+    T ■ ■ O ■ ■ 
+     ■ A N T ■ ■ 
+
+generated in 1229.144513321s on thread 7
+beehive of size 6x6
+■ ■ ■ D O ■ 
+ ■ H E N ■ ■ 
+  O R ■ A R M 
+   ■ ■ E ■ ■ S 
+    A T ■ U S ■ 
+     ■ O ■ M ■ ■ 
+
+generated in 1342.138044157s on thread 0
+beehive of size 6x6
+■ ■ T A D S 
+ ■ ■ R I O T 
+  B E A R ■ A 
+   ■ ■ P ■ ■ Y 
+    ■ ■ S I P ■ 
+     H A ■ S ■ ■ 
+
+generated in 1566.024265666s on thread 8
+beehive of size 6x6
+■ ■ H R ■ ■ 
+ ■ ■ A ■ ■ T 
+  I T ■ L A W 
+   S A L E ■ O 
+    ■ I ■ F ■ ■ 
+     P L O T ■ ■ 
+
+generated in 1744.03466746s on thread 14
+beehive of size 6x6
+■ ■ E A S T 
+ ■ H ■ ■ E H 
+  S O ■ W A Y 
+   ■ P ■ H ■ ■ 
+    U S ■ E ■ ■ 
+     M ■ ■ N ■ ■ 
+
+generated in 2197.796093024s on thread 2
+beehive of size 6x6
+■ ■ ■ ■ T ■ 
+ ■ ■ T E R M 
+  S E W ■ U S 
+   P ■ I ■ E ■ 
+    O ■ S I R ■ 
+     T I T ■ ■ ■ 
+
+beehive of size 6x6
+■ ■ C D S ■ 
+ ■ ■ A ■ H E 
+  H E R ■ O W 
+   R ■ S T E W 
+    ■ ■ ■ I ■ ■ 
+     G A V E ■ ■ 
+
+beehive of size 7x7
+■ ■ ■ T ■ P M 
+ ■ ■ A R M ■ I 
+  ■ ■ ■ U S ■ X 
+   T I P S ■ I T 
+    ■ ■ A T M ■ ■ 
+     O ■ C ■ E ■ ■ 
+      R A T ■ ■ ■ ■ 
+
+generated in 182.452836561s on thread 1
+beehive of size 7x7
+■ ■ ■ D ■ E H 
+ ■ ■ C A N ■ R 
+  ■ ■ ■ I ■ O ■ 
+   T O L L ■ D O 
+    ■ ■ A Y ■ D ■ 
+     A I M ■ A ■ ■ 
+      D ■ P ■ ■ ■ ■ 
+
+generated in 1853.970956927s on thread 13
+
+■ ■ Y E T 
+ ■ H ■ A ■ 
+  T E E T H 
+   ■ R ■ S ■ 
+    T E A ■ ■ 
+
+generated in 809.771818ms on thread 11
+beehive of size 5x5
+■ ■ H A S 
+ ■ A ■ N ■ 
+  B R A T S 
+   ■ E ■ S ■ 
+    J A M ■ ■ 
+
+generated in 1.356402498s on thread 9
+beehive of size 5x5
+■ ■ H O G 
+ ■ A ■ N ■ 
+  W R I T E 
+   ■ E ■ O ■ 
+    B A T ■ ■ 
+
+generated in 1.595615697s on thread 12
+beehive of size 5x5
+■ ■ Y E P 
+ ■ L ■ A ■ 
+  F A R T S 
+   ■ T ■ S ■ 
+    S E A ■ ■ 
+
+generated in 1.620889087s on thread 0
+beehive of size 5x5
+■ ■ O W N 
+ ■ W ■ I ■ 
+  T O A S T 
+   ■ R ■ E ■ 
+    B E G ■ ■ 
+
+generated in 2.856723435s on thread 10
+beehive of size 5x5
+■ ■ A N D 
+ ■ R ■ E ■ 
+  B I K E S 
+   ■ S ■ D ■ 
+    A K A ■ ■ 
+
+generated in 5.874649589s on thread 6
+beehive of size 5x5
+■ ■ S K Y 
+ ■ A ■ N ■ 
+  G R E E N 
+   ■ E ■ E ■ 
+    T A P ■ ■ 
+
+generated in 6.000054077s on thread 2
+beehive of size 5x5
+■ ■ Y A Y 
+ ■ H ■ R ■ 
+  W E I G H 
+   ■ A ■ H ■ 
+    F L U ■ ■ 
+
+generated in 7.748165042s on thread 13
+beehive of size 5x5
+■ ■ D U E 
+ ■ V ■ S ■ 
+  D I N E D 
+   ■ E ■ D ■ 
+    T W O ■ ■ 
+
+generated in 8.251964605s on thread 4
+beehive of size 5x5
+■ ■ S H Y 
+ ■ S ■ A ■ 
+  M E L T S 
+   ■ E ■ S ■ 
+    D N A ■ ■ 
+
+generated in 8.440556824s on thread 3
+beehive of size 5x5
+■ ■ F E W 
+ ■ L ■ A ■ 
+  E A R T H 
+   ■ T ■ S ■ 
+    S E A ■ ■ 
+
+generated in 8.93621205s on thread 1
+beehive of size 5x5
+■ ■ Y E P 
+ ■ L ■ A ■ 
+  F A R T S 
+   ■ T ■ S ■ 
+    S E A ■ ■ 
+
+generated in 10.468976287s on thread 14
+beehive of size 5x5
+■ ■ Y E P 
+ ■ L ■ A ■ 
+  F A R T S 
+   ■ T ■ S ■ 
+    S E A ■ ■ 
+
+generated in 11.097396401s on thread 5
+beehive of size 5x5
+■ ■ A C T 
+ ■ R ■ U ■ 
+  B O O T H 
+   ■ B ■ E ■ 
+    A S H ■ ■ 
+
+generated in 12.77715368s on thread 8
+beehive of size 5x5
+■ ■ Y E S 
+ ■ H ■ N ■ 
+  T O A D S 
+   ■ L ■ S ■ 
+    P E A ■ ■ 
+
+beehive of size 5x6
+■ W E E P S 
+ A ■ N ■ ■ E 
+  N U D E S T 
+   T ■ ■ A ■ S 
+    S P E R M ■ 
+
+generated in 1.627275751s on thread 10
+beehive of size 5x6
+■ O L D E R 
+ S ■ I ■ ■ E 
+  O C E A N S 
+   A ■ ■ I ■ T 
+    P A N D A ■ 
+
+generated in 11.057945728s on thread 9
+
+beehive of size 6x6
+■ ■ L A M E 
+ ■ ■ ■ ■ Y ■ 
+  H ■ H A ■ ■ 
+   O ■ ■ I ■ ■ 
+    B Y ■ M ■ ■ 
+     O O P S ■ ■ 
+
+beehive of size 6x6
+■ ■ B R A S 
+ ■ ■ O ■ M E 
+  ■ ■ R ■ ■ X 
+   ■ ■ N O ■ ■ 
+    ■ U ■ W ■ ■ 
+     F ■ O N ■ ■ 
+
+generated in 251.63103444s on thread 7
+
+beehive swap
+ W I T H 
+O ■ N ■ E 
+ N E T S 
+  T ■ O 
+   O N 
+
+generated in 8.955013183s on thread 1
+beehive swap
+ T H E M 
+A ■ U ■ S 
+ U R G E 
+  T ■ E 
+   O F 
+
+generated in 25.707734298s on thread 2
+beehive swap
+ D A T E 
+A ■ R ■ H 
+ D I E T 
+  D ■ A 
+   S O 
+
+generated in 137.750626154s on thread 0
+beehive swap
+ H E L P 
+A ■ A ■ M 
+ R O S E 
+  G ■ T 
+   H I 
+
+generated in 193.440778463s on thread 3
+
+
+beehive of size 5x7
+■ R U M ■ A H 
+ H ■ ■ ■ ■ ■ O 
+  E X P E R T ■ 
+   ■ ■ I ■ ■ ■ ■ 
+    ■ D N A ■ ■ ■ 
+
+generated in 852.089254ms on thread 13
+beehive of size 5x7
+■ ■ ■ S E X Y 
+ ■ ■ S ■ ■ ■ O 
+  A M ■ T A N ■ 
+   ■ ■ O ■ ■ ■ ■ 
+    I N K ■ ■ ■ ■ 
+
+generated in 2.273555996s on thread 3
+beehive of size 5x7
+■ ■ D R E S S 
+ H ■ ■ ■ ■ ■ O 
+  A L S O ■ L ■ 
+   ■ ■ E ■ O ■ ■ 
+    A C T S ■ ■ ■ 
+
+generated in 2.697673533s on thread 9
+beehive of size 5x7
+■ H E R ■ A D 
+ A ■ H ■ ■ ■ O 
+  R ■ ■ P U T ■ 
+   E ■ A ■ ■ ■ ■ 
+    A T M ■ ■ ■ ■ 
+
+generated in 2.75836585s on thread 6
+beehive of size 5x7
+■ E X ■ F U N 
+ H ■ ■ ■ ■ ■ O 
+  R E P E A T ■ 
+   ■ ■ E ■ N ■ ■ 
+    ■ P R O ■ ■ ■ 
+
+generated in 3.551494882s on thread 14
+beehive of size 5x7
+■ W E B ■ U M 
+ E ■ ■ ■ ■ ■ Y 
+  P ■ F R E E ■ 
+   I ■ I ■ H ■ ■ 
+    C A T ■ ■ ■ ■ 
+
+generated in 5.879977152s on thread 5
+beehive of size 5x7
+■ A T ■ L O W 
+ ■ ■ H ■ ■ ■ E 
+  S H E ■ H R ■ 
+   U ■ ■ ■ E ■ ■ 
+    E A C H ■ ■ ■ 
+
+generated in 6.997740165s on thread 11
+beehive of size 5x7
+■ I D ■ W A R 
+ H ■ O ■ H ■ ■ 
+  A ■ ■ ■ E W ■ 
+   H ■ O ■ E ■ ■ 
+    A S K S ■ ■ ■ 
+
+generated in 28.118196354s on thread 10
+beehive of size 5x7
+■ D U G ■ A W 
+ A ■ ■ ■ ■ ■ E 
+  T A T T O O ■ 
+   ■ ■ E ■ H ■ ■ 
+    ■ W A S ■ ■ ■ 
+
+generated in 38.597722486s on thread 0
+beehive of size 5x7
+■ F E D ■ M E 
+ O ■ ■ ■ A ■ ■ 
+  N ■ F ■ I T ■ 
+   E ■ R ■ R ■ ■ 
+    S O Y A ■ ■ ■ 
+
+generated in 38.913442463s on thread 12
+beehive of size 5x7
+■ Y E P ■ H R 
+ M ■ ■ ■ T ■ ■ 
+  E ■ P R O M ■ 
+   A ■ A ■ P ■ ■ 
+    T E N ■ ■ ■ ■ 
+
+generated in 49.096225969s on thread 1
+beehive of size 5x7
+■ F I X ■ O R 
+ I ■ ■ ■ H ■ ■ 
+  N E A T E R ■ 
+   ■ ■ L ■ H ■ ■ 
+    P A L ■ ■ ■ ■ 
+
+
+layout "343" fixed
+⬢ ⬢ ⬡ ⬡ ⬡ ⬡ 
+ ⬢ ⬡ ⬢ ⬢ ⬡ ⬡ 
+  ⬡ ⬡ ⬡ ⬡ ⬢ ⬡ 
+   ⬡ ⬢ ⬡ ⬢ ⬡
+    ⬡ ⬢ ⬡ ⬡
+     ⬡ ⬡ ⬡
+
+beehive of size 6x6
+  R O W S
+ I ■ ■ E H
+S T E P ■ E
+ A ■ A ■ N
+  F ■ S O
+   E A T
+
+generated in 16.670254314s on thread 10
+beehive of size 6x6
+  E R A S 
+ H ■ ■ D O 
+T O L D ■ N 
+ Y ■ O ■ W
+  P ■ S O
+   E A T
+
+generated in 47.948923348s on thread 4
+beehive of size 6x6
+  D I P S 
+ A ■ ■ M E 
+S H O T ■ E 
+ E ■ A ■ L
+  W ■ T O
+   N A H
+
+generated in 56.577194232s on thread 5
+beehive of size 6x6
+  S E W S 
+ S ■ ■ E H 
+M O P S ■ E 
+ Y ■ U ■ M
+  T ■ T O
+   H A S
+
+generated in 100.399782384s on thread 3
+beehive of size 6x6
+⬢ ⬢ T A B S 
+ ⬢ C ⬢ ⬢ E H 
+  A D D S ⬢ E 
+   I ⬢ U ⬢ R ⬢ 
+    R ⬢ S O ⬢ ⬢ 
+     S I T ⬢ ⬢ ⬢ 
+
+generated in 217.803067695s on thread 12
+
+beehive of size 6x6
+⬢ ⬢ T H I S 
+ ⬢ E ⬢ ⬢ T O 
+  S H O O ⬢ N 
+   U ⬢ D ⬢ O ⬢ 
+    C ⬢ D O ⬢ ⬢ 
+     H A S ⬢ ⬢ ⬢ 
+
+generated in 401.293167554s on thread 0
+beehive of size 6x6
+  Y E A H 
+ H ■ ■ S O 
+S O F A ■ T 
+ T ■ R ■ I
+  A ■ E X
+   T H E
+
+generated in 493.367329499s on thread 14
+beehive of size 6x6
+⬢ ⬢ T H I S 
+ ⬢ O ⬢ ⬢ D O 
+  D Y E D ⬢ N 
+   A ⬢ A ⬢ O ⬢ 
+    W ⬢ T O ⬢ ⬢ 
+     G A S ⬢ ⬢ ⬢ 
+
+generated in 494.22973915s on thread 9
+beehive of size 6x6
+⬢ ⬢ E R A S 
+ ⬢ H ⬢ ⬢ M E 
+  S O R T ⬢ T 
+   T ⬢ A ⬢ A ⬢ 
+    E ⬢ N O ⬢ ⬢ 
+     W I G ⬢ ⬢ ⬢ 
+
+generated in 517.881792864s on thread 1
+beehive of size 6x6
+⬢ ⬢ T O W S 
+ ⬢ O ⬢ ⬢ E H 
+  P R O P ⬢ Y 
+   H ⬢ A ⬢ L ⬢ 
+    E ⬢ T O ⬢ ⬢ 
+     W A H ⬢ ⬢ ⬢ 
+
+generated in 632.958901227s on thread 8
+
+beehive of size 9x7
+   ■ B Y ■ 
+  F ■ A ■ W 
+ L A R G E R 
+E ■ X ■ ■ ■ I 
+ ■ ■ ■ S ■ ■ T 
+  A ■ S ■ T ■ E 
+   T E A ■ O H
+    M ■ M ■ E
+     S ■ E H
+

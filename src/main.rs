@@ -1,43 +1,123 @@
-use std::{fs::File, io::{Read, Result, BufReader, Write}, time::Instant};
+use std::{
+    fs::File,
+    io::{BufReader, Read, Write},
+    result::Result,
+    time::Instant,
+};
 
 use beehive::Beehive;
 use regex::Regex;
 
-mod dictionary;
+pub mod dictionary;
 // mod waffle;
-mod beehive;
+pub mod beehive;
+pub mod grid;
+pub mod grid_beehive;
 
-fn main() -> Result<()> {
-    let start = Instant::now();
+fn main() -> Result<(), ()> {
+    // let args: Vec<String> = env::args().collect();
+    // let input = &args[1];
+    // println!("{:?}", args);
+    let mut input = String::new();
+    println!("number of rows:");
+    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
+    input = input.replace("\n", "");
+    let rows: usize = input
+        .parse()
+        .expect(format!("cant parse {} as usize", input).as_str());
+    let mut input = String::new();
+    println!("number of cols:");
+    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
+    input = input.replace("\n", "");
+    let cols: usize = input
+        .parse()
+        .expect(format!("cant parse {} as usize", input).as_str());
 
-    gen_beehive()?;
+    let mut input = String::new();
+    println!("number of threads:");
+    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
+    input = input.replace("\n", "");
+    let thread_cnt: usize = input
+        .parse()
+        .expect(format!("cant parse {} as usize", input).as_str());
 
-    let elapsed = start.elapsed();
-    println!("beehive generated in {:?}", elapsed);
+    let mut handles = vec![];
+    for i in 0..thread_cnt {
+        let r = *&rows;
+        let c = *&cols;
+        let thread_index = *&i;
+        let handle = std::thread::spawn(move || {
+            let start = Instant::now();
+            // println!("generating a {}x{} grid on thread {}", r, c, thread_index);
+            let res = gen_grid_beehive(r, c).expect("could not get a working grid");
+
+            let elapsed = start.elapsed();
+            println!("{}", res);
+            println!("generated in {:?} on thread {}", elapsed, thread_index);
+        });
+
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        let _r = handle.join();
+    }
 
     Ok(())
 }
 
-fn gen_beehive() -> std::io::Result<()> {
+fn _gen_beehive() -> Result<(), ()> {
     let dictionary = dictionary::Dictionary::new()?;
 
     let empty_beehive = beehive::MediumBeehive::gen_empty();
 
-    let res = beehive::recursive_generate(&dictionary, empty_beehive, 0);
+    let res = beehive::_recursive_generate(&dictionary, empty_beehive, 0);
 
     match res {
-        Some(mut beehive) => {
-            beehive.shuffle();
+        Some(beehive) => {
             println!("{:?}", beehive);
             println!("{}", beehive);
-        },
-        None => println!("no beehive found")
+        }
+        None => println!("no beehive found"),
     };
 
     Ok(())
 }
 
-fn _parse_whole_xml() -> std::io::Result<()> {
+fn _gen_grid(rows: usize, cols: usize) -> Result<grid::Grid, ()> {
+    let dictionary = dictionary::Dictionary::new().unwrap();
+
+    let empty = grid::Grid::new(rows, cols);
+
+    let full = empty.recursive_generate(&dictionary);
+
+    match full {
+        Some(g) => Ok(g),
+        None => Err(()),
+    }
+}
+fn gen_grid_beehive(rows: usize, cols: usize) -> Result<grid_beehive::GridBeehive, ()> {
+    let dictionary = dictionary::Dictionary::new().unwrap();
+
+    let full = match (rows, cols) {
+        (3,4) => grid_beehive::GridBeehive::new_343_honeycomb().recursive_generate(&dictionary, false),
+        (4,3) => grid_beehive::GridBeehive::new_344_honeycomb().recursive_generate(&dictionary, false),
+        (4,4) => grid_beehive::GridBeehive::new_444_honeycomb().recursive_generate(&dictionary, false),
+        (5,5) => grid_beehive::GridBeehive::new_5x5_honeycomb().recursive_generate(&dictionary, false),
+        (5,6) => grid_beehive::GridBeehive::new_5x6_honeycomb().recursive_generate(&dictionary, false),
+        (6,4) => grid_beehive::GridBeehive::new_6444_honeycomb().recursive_generate(&dictionary, true),
+        (6,6) => grid_beehive::GridBeehive::new_6x6_honeycomb().recursive_generate(&dictionary, true),
+        (7,7) => grid_beehive::GridBeehive::new_7x7_honeycomb().recursive_generate(&dictionary, true),
+        (r, c) => grid_beehive::GridBeehive::new_spotted_champfered(r, c).recursive_generate(&dictionary, true)
+    };
+
+    match full {
+        Some(g) => Ok(g),
+        None => Err(()),
+    }
+}
+
+fn _parse_whole_xml() -> std::result::Result<(), ()> {
     let start = Instant::now();
     let docs = open_xml("samples/enwiktionary-latest-abstract.xml")?;
     let elapsed = start.elapsed();
@@ -49,12 +129,12 @@ fn _parse_whole_xml() -> std::io::Result<()> {
     println!("{:?} words not cleaned up", en_words.len());
     for word in &en_words[0..3] {
         println!("{:?}", word);
-    };
+    }
     let en_words = clean_up(&en_words)?;
     println!("{:?} words cleaned up", en_words.len());
     for word in &en_words[0..3] {
         println!("{:?}", word);
-    };
+    }
     let max_len = get_max_len(&en_words)?;
     println!("{:?} max length", max_len);
 
@@ -78,12 +158,12 @@ fn _parse_whole_xml() -> std::io::Result<()> {
     println!("{:?} words not cleaned up", fr_words.len());
     for word in &fr_words[0..3] {
         println!("{:?}", word);
-    };
+    }
     let fr_words = clean_up(&fr_words)?;
     println!("{:?} words cleaned up", fr_words.len());
     for word in &fr_words[0..3] {
         println!("{:?}", word);
-    };
+    }
     let max_len = get_max_len(&fr_words)?;
     println!("{:?} max length", max_len);
 
@@ -119,8 +199,8 @@ pub struct Doc {
     pub abs: String,
 }
 
-pub fn open_xml(file_path: &str) -> Result<Vec<Doc>> {
-    let file = File::open(file_path)?;
+pub fn open_xml(file_path: &str) -> Result<Vec<Doc>, ()> {
+    let file = File::open(file_path).map_err(|_e| ())?;
     let reader = BufReader::new(file);
 
     let feed: Feed = quick_xml::de::from_reader(reader).unwrap();
@@ -128,7 +208,7 @@ pub fn open_xml(file_path: &str) -> Result<Vec<Doc>> {
     Ok(feed.docs)
 }
 
-pub fn filter_lang(docs: &Vec<Doc>, lang: &str) -> Result<Vec<String>> {
+pub fn filter_lang(docs: &Vec<Doc>, lang: &str) -> Result<Vec<String>, ()> {
     let filtered_docs = docs
         .into_iter()
         .filter(|d| d.abs.as_str() == lang)
@@ -138,16 +218,16 @@ pub fn filter_lang(docs: &Vec<Doc>, lang: &str) -> Result<Vec<String>> {
     Ok(filtered_docs)
 }
 
-pub fn open_file(path: &str) -> Result<String> {
-    let file = File::open(path)?;
+pub fn open_file(path: &str) -> Result<String, ()> {
+    let file = File::open(path).map_err(|_e| ())?;
     let mut buf_reader = BufReader::new(file);
     let mut contents = String::new();
-    buf_reader.read_to_string(&mut contents)?;
+    buf_reader.read_to_string(&mut contents).map_err(|_e| ())?;
 
     Ok(contents)
 }
 
-pub fn extract_words(contents: String) -> Result<Vec<String>> {
+pub fn extract_words(contents: String) -> Result<Vec<String>, ()> {
     let mut split = contents.split('\n');
     split.next(); // remove header line
 
@@ -164,12 +244,13 @@ pub fn extract_words(contents: String) -> Result<Vec<String>> {
             };
 
             word
-        }).collect();
-    
+        })
+        .collect();
+
     Ok(words)
 }
 
-pub fn clean_up(words: &Vec<String>) -> Result<Vec<String>> {
+pub fn clean_up(words: &Vec<String>) -> Result<Vec<String>, ()> {
     // let lower_case_only = Regex::new(r"^[a-z]+$").unwrap();
     // let all_case = Regex::new(r"^[a-zA-Z]+$").unwrap();
     let entry_reg = Regex::new(r"^Wiktionary: [a-zA-Z]+$").unwrap();
@@ -184,50 +265,54 @@ pub fn clean_up(words: &Vec<String>) -> Result<Vec<String>> {
     Ok(clean_words)
 }
 
-pub fn filter_len(words: &Vec<String>, len: usize) -> Result<Vec<String>> {
+pub fn filter_len(words: &Vec<String>, len: usize) -> Result<Vec<String>, ()> {
     let correct_len = words
-        .into_iter().filter(|w| w.len() == len)
+        .into_iter()
+        .filter(|w| w.len() == len)
         .map(|s| String::from(s))
         .collect();
 
     Ok(correct_len)
 }
 
-pub fn get_max_len(words:&Vec<String>) -> Result<usize> {
+pub fn get_max_len(words: &Vec<String>) -> Result<usize, ()> {
     let mut max_len = 0;
     for word in words {
         max_len = std::cmp::max(max_len, word.len());
-    };
+    }
 
     Ok(max_len)
 }
 
-pub fn write_dictionary(path: &str, words:&Vec<String>) -> Result<()> {
-    let mut file = File::create(path)?;
+pub fn write_dictionary(path: &str, words: &Vec<String>) -> Result<(), ()> {
+    let mut file = File::create(path).map_err(|_e| ())?;
     for word in words {
-        file.write_all(word.as_bytes())?;
-        file.write_all(b"\n")?;
-    };
+        file.write_all(word.as_bytes()).map_err(|_e| ())?;
+        file.write_all(b"\n").map_err(|_e| ())?;
+    }
 
     Ok(())
 }
 
 #[cfg(test)]
 mod test {
-    use std::time::Instant;
     use regex::Regex;
+    use std::time::Instant;
 
-    use crate::{open_file, extract_words, clean_up, filter_len, get_max_len, write_dictionary, open_xml, filter_lang};
+    use crate::{
+        clean_up, extract_words, filter_lang, filter_len, get_max_len, open_file, open_xml,
+        write_dictionary,
+    };
 
     #[test]
-    fn parse_300_lines() -> std::io::Result<()> {
+    fn parse_300_lines() -> std::result::Result<(), ()> {
         let start = Instant::now();
 
         let contents = open_file("samples/300-first-lines")?;
 
         let words = extract_words(contents)?;
         let words = clean_up(&words)?;
-        
+
         for word in &words {
             println!("{:?}", word);
         }
@@ -238,7 +323,7 @@ mod test {
         Ok(())
     }
     #[test]
-    fn parse_100k_lines() -> std::io::Result<()> {
+    fn parse_100k_lines() -> std::result::Result<(), ()> {
         let start = Instant::now();
 
         let contents = open_file("samples/100k-first-lines")?;
@@ -246,7 +331,7 @@ mod test {
         let words = extract_words(contents)?;
         println!("{:?} words not cleaned up", words.len());
         let words = clean_up(&words)?;
-        
+
         for word in &words {
             println!("{:?}", word);
         }
@@ -258,7 +343,7 @@ mod test {
     }
 
     #[test]
-    fn parse_2m_lines() -> std::io::Result<()> {
+    fn parse_2m_lines() -> std::result::Result<(), ()> {
         let start = Instant::now();
 
         let contents = open_file("samples/2M-first-lines")?;
@@ -278,7 +363,6 @@ mod test {
                 write_dictionary(path.as_str(), &i_lenght_words)?;
             }
         }
-
 
         // let five_letters_words = filter_len(&words, 5)?;
         // for word in &five_letters_words {
@@ -300,7 +384,7 @@ mod test {
     }
 
     #[test]
-    fn extract_all_language_entries() -> std::io::Result<()> {
+    fn extract_all_language_entries() -> std::result::Result<(), ()> {
         let start = Instant::now();
 
         let contents = open_file("samples/enwiktionary-latest-all-titles")?;
@@ -330,24 +414,23 @@ mod test {
     fn test_regex() {
         let re = Regex::new(r"^[a-zA-Z]+$").unwrap();
 
-        let m =re.is_match("haystack");
+        let m = re.is_match("haystack");
         println!("haystack match ? {:?}", m);
-        let m =re.is_match("HaySTack");
+        let m = re.is_match("HaySTack");
         println!("HaySTack match ? {:?}", m);
 
-        let m =re.is_match("haystack!");
+        let m = re.is_match("haystack!");
         println!("haystack! match ? {:?}", m);
-        
-        let m =re.is_match("hàystack");
-        println!("hàystack match ? {:?}", m);
-        
-        let m =re.is_match("تبریز");
-        println!("تبریز match ? {:?}", m);
 
+        let m = re.is_match("hàystack");
+        println!("hàystack match ? {:?}", m);
+
+        let m = re.is_match("تبریز");
+        println!("تبریز match ? {:?}", m);
     }
 
     #[test]
-    fn parse_test_xml() -> std::io::Result<()> {
+    fn parse_test_xml() -> std::result::Result<(), ()> {
         let docs = open_xml("samples/test.xml")?;
         let en_words = filter_lang(&docs, "==English==")?;
         for word in &en_words {
@@ -357,7 +440,7 @@ mod test {
         Ok(())
     }
     #[test]
-    fn parse_whole_xml() -> std::io::Result<()> {
+    fn parse_whole_xml() -> std::result::Result<(), ()> {
         let start = Instant::now();
         let docs = open_xml("samples/enwiktionary-latest-abstract.xml")?;
         let elapsed = start.elapsed();
@@ -372,7 +455,7 @@ mod test {
     }
 
     #[test]
-    fn test_substring() -> std::io::Result<()> {
+    fn test_substring() -> std::result::Result<(), ()> {
         let word = "Wiktionary: lol".to_string();
         let word = word.as_str()[12..].to_string();
 

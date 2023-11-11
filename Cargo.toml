@@ -12,3 +12,4 @@ serde = { version = "1.0", features = [ "derive" ] }
 serde_derive = "1.0.144"
 derivative = "2.2.0"
 rand = "0.8.5"
+simple-matrix = "0.1.2"

@@ -100,13 +100,15 @@ fn gen_grid_beehive(rows: usize, cols: usize) -> Result<grid_beehive::GridBeehiv
     let dictionary = dictionary::Dictionary::new().unwrap();
 
     let full = match (rows, cols) {
+        (3,4) => grid_beehive::GridBeehive::new_343_honeycomb().recursive_generate(&dictionary, false),
+        (4,3) => grid_beehive::GridBeehive::new_344_honeycomb().recursive_generate(&dictionary, false),
         (4,4) => grid_beehive::GridBeehive::new_444_honeycomb().recursive_generate(&dictionary, false),
         (5,5) => grid_beehive::GridBeehive::new_5x5_honeycomb().recursive_generate(&dictionary, false),
         (5,6) => grid_beehive::GridBeehive::new_5x6_honeycomb().recursive_generate(&dictionary, false),
         (6,4) => grid_beehive::GridBeehive::new_6444_honeycomb().recursive_generate(&dictionary, true),
         (6,6) => grid_beehive::GridBeehive::new_6x6_honeycomb().recursive_generate(&dictionary, true),
         (7,7) => grid_beehive::GridBeehive::new_7x7_honeycomb().recursive_generate(&dictionary, true),
-        (r, c) => grid_beehive::GridBeehive::new_champfered(r, c).recursive_generate(&dictionary, true)
+        (r, c) => grid_beehive::GridBeehive::new_spotted_champfered(r, c).recursive_generate(&dictionary, true)
     };
 
     match full {

@@ -400,3 +400,115 @@ beehive of size 5x7
    ■ ■ L ■ H ■ ■ 
     P A L ■ ■ ■ ■ 
 
+
+layout "343" fixed
+⬢ ⬢ ⬡ ⬡ ⬡ ⬡ 
+ ⬢ ⬡ ⬢ ⬢ ⬡ ⬡ 
+  ⬡ ⬡ ⬡ ⬡ ⬢ ⬡ 
+   ⬡ ⬢ ⬡ ⬢ ⬡
+    ⬡ ⬢ ⬡ ⬡
+     ⬡ ⬡ ⬡
+
+beehive of size 6x6
+  R O W S
+ I ■ ■ E H
+S T E P ■ E
+ A ■ A ■ N
+  F ■ S O
+   E A T
+
+generated in 16.670254314s on thread 10
+beehive of size 6x6
+  E R A S 
+ H ■ ■ D O 
+T O L D ■ N 
+ Y ■ O ■ W
+  P ■ S O
+   E A T
+
+generated in 47.948923348s on thread 4
+beehive of size 6x6
+  D I P S 
+ A ■ ■ M E 
+S H O T ■ E 
+ E ■ A ■ L
+  W ■ T O
+   N A H
+
+generated in 56.577194232s on thread 5
+beehive of size 6x6
+  S E W S 
+ S ■ ■ E H 
+M O P S ■ E 
+ Y ■ U ■ M
+  T ■ T O
+   H A S
+
+generated in 100.399782384s on thread 3
+beehive of size 6x6
+⬢ ⬢ T A B S 
+ ⬢ C ⬢ ⬢ E H 
+  A D D S ⬢ E 
+   I ⬢ U ⬢ R ⬢ 
+    R ⬢ S O ⬢ ⬢ 
+     S I T ⬢ ⬢ ⬢ 
+
+generated in 217.803067695s on thread 12
+
+beehive of size 6x6
+⬢ ⬢ T H I S 
+ ⬢ E ⬢ ⬢ T O 
+  S H O O ⬢ N 
+   U ⬢ D ⬢ O ⬢ 
+    C ⬢ D O ⬢ ⬢ 
+     H A S ⬢ ⬢ ⬢ 
+
+generated in 401.293167554s on thread 0
+beehive of size 6x6
+  Y E A H 
+ H ■ ■ S O 
+S O F A ■ T 
+ T ■ R ■ I
+  A ■ E X
+   T H E
+
+generated in 493.367329499s on thread 14
+beehive of size 6x6
+⬢ ⬢ T H I S 
+ ⬢ O ⬢ ⬢ D O 
+  D Y E D ⬢ N 
+   A ⬢ A ⬢ O ⬢ 
+    W ⬢ T O ⬢ ⬢ 
+     G A S ⬢ ⬢ ⬢ 
+
+generated in 494.22973915s on thread 9
+beehive of size 6x6
+⬢ ⬢ E R A S 
+ ⬢ H ⬢ ⬢ M E 
+  S O R T ⬢ T 
+   T ⬢ A ⬢ A ⬢ 
+    E ⬢ N O ⬢ ⬢ 
+     W I G ⬢ ⬢ ⬢ 
+
+generated in 517.881792864s on thread 1
+beehive of size 6x6
+⬢ ⬢ T O W S 
+ ⬢ O ⬢ ⬢ E H 
+  P R O P ⬢ Y 
+   H ⬢ A ⬢ L ⬢ 
+    E ⬢ T O ⬢ ⬢ 
+     W A H ⬢ ⬢ ⬢ 
+
+generated in 632.958901227s on thread 8
+
+beehive of size 9x7
+   ■ B Y ■ 
+  F ■ A ■ W 
+ L A R G E R 
+E ■ X ■ ■ ■ I 
+ ■ ■ ■ S ■ ■ T 
+  A ■ S ■ T ■ E 
+   T E A ■ O H
+    M ■ M ■ E
+     S ■ E H
+

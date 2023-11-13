@@ -120,63 +120,51 @@ fn _gen_grid(rows: usize, cols: usize) -> Result<grid::Grid, ()> {
         None => Err(()),
     }
 }
-fn gen_grid_beehive(rows: usize, cols: usize) -> Result<grid_beehive::GridBeehive, ()> {
+fn _gen_grid_beehive(rows: usize, cols: usize) -> Result<grid_beehive::GridBeehive, ()> {
     use grid_beehive::GridBeehive;
     let dictionary = dictionary::Dictionary::new().unwrap();
 
-    let full =
-        match (rows, cols) {
-            (1,1) => {
-                let mut empty = GridBeehive::new(4,4);
-                empty.set_row(0, "n\0\0\0".to_string());
-                empty.set_row(1, "_\0_\0".to_string());
-                empty.set_row(2, "_\0\0\0".to_string());
-                empty.set_row(3, "___s".to_string());
+    let full = match (rows, cols) {
+        (1, 1) => {
+            let mut empty = GridBeehive::new(4, 4);
+            empty.set_row(0, "n\0\0\0".to_string());
+            empty.set_row(1, "_\0_\0".to_string());
+            empty.set_row(2, "_\0\0\0".to_string());
+            empty.set_row(3, "___s".to_string());
 
-                empty.recursive_generate(&dictionary, false)
-            },
-            (1,2) => {
-                let mut empty = GridBeehive::new(7,4);
-                empty.set_row(0, "___n".to_string());
-                empty.set_row(1, "__\0_".to_string());
-                empty.set_row(2, "_\0\0_".to_string());
-                empty.set_row(3, "\0_\0_".to_string());
-                empty.set_row(4, "\0\0__".to_string());
-                empty.set_row(5, "\0___".to_string());
-                empty.set_row(6, "t___".to_string());
+            empty.recursive_generate(&dictionary, false)
+        }
+        (1, 2) => {
+            let mut empty = GridBeehive::new(7, 4);
+            empty.set_row(0, "___n".to_string());
+            empty.set_row(1, "__\0_".to_string());
+            empty.set_row(2, "_\0\0_".to_string());
+            empty.set_row(3, "\0_\0_".to_string());
+            empty.set_row(4, "\0\0__".to_string());
+            empty.set_row(5, "\0___".to_string());
+            empty.set_row(6, "t___".to_string());
 
-                empty.recursive_generate(&dictionary, false)
-            },
-            (1,3) => {
-                let mut empty = GridBeehive::new(4,7);
-                empty.set_row(0, "______s".to_string());
-                empty.set_row(1, "___\0\0\0_".to_string());
-                empty.set_row(2, "__\0_\0__".to_string());
-                empty.set_row(3, "t\0\0\0___".to_string());
+            empty.recursive_generate(&dictionary, false)
+        }
+        (1, 3) => {
+            let mut empty = GridBeehive::new(4, 7);
+            empty.set_row(0, "______s".to_string());
+            empty.set_row(1, "___\0\0\0_".to_string());
+            empty.set_row(2, "__\0_\0__".to_string());
+            empty.set_row(3, "t\0\0\0___".to_string());
 
-                empty.recursive_generate(&dictionary, false)
-            },
-            (3, 4) => GridBeehive::new_343_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (4, 3) => GridBeehive::new_344_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (4, 4) => GridBeehive::new_444_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (5, 5) => GridBeehive::new_5x5_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (5, 6) => GridBeehive::new_5x6_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (6, 4) => GridBeehive::new_6444_honeycomb()
-                .recursive_generate(&dictionary, true),
-            (6, 6) => {
-                GridBeehive::new_6x6_honeycomb().recursive_generate(&dictionary, true)
-            }
-            (7, 7) => {
-                GridBeehive::new_7x7_honeycomb().recursive_generate(&dictionary, false)
-            }
-            (r, c) => GridBeehive::new_spotted_champfered(r, c)
-                .recursive_generate(&dictionary, true),
-        };
+            empty.recursive_generate(&dictionary, false)
+        }
+        (3, 4) => GridBeehive::new_343_honeycomb().recursive_generate(&dictionary, false),
+        (4, 3) => GridBeehive::new_344_honeycomb().recursive_generate(&dictionary, false),
+        (4, 4) => GridBeehive::new_444_honeycomb().recursive_generate(&dictionary, false),
+        (5, 5) => GridBeehive::new_5x5_honeycomb().recursive_generate(&dictionary, false),
+        (5, 6) => GridBeehive::new_5x6_honeycomb().recursive_generate(&dictionary, false),
+        (6, 4) => GridBeehive::new_6444_honeycomb().recursive_generate(&dictionary, true),
+        (6, 6) => GridBeehive::new_6x6_honeycomb().recursive_generate(&dictionary, true),
+        (7, 7) => GridBeehive::new_7x7_honeycomb().recursive_generate(&dictionary, false),
+        (r, c) => GridBeehive::new_spotted_champfered(r, c).recursive_generate(&dictionary, true),
+    };
 
     match full {
         Some(g) => Ok(g),

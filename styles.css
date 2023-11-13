@@ -1,0 +1,16 @@
+.beehive-container {
+    display: grid;
+    font-size: 2em;
+}
+/* .size-3x3 {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    width: 8rem;
+} */
+.cell {
+    text-align: center;
+    grid-column: span 2 / span 2;
+    line-height: 1.73em;
+}
+.offset {
+    grid-column: span 1 / span 1;
+}

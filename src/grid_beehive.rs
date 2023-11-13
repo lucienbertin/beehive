@@ -7,7 +7,7 @@ use std::{
 
 use crate::dictionary::Dictionary;
 
-#[derive(Clone, Debug)]
+#[derive(Debug, Clone)]
 pub struct GridBeehive {
     layout: Matrix<char>,
     resolved_lines: Vec<Line>,
@@ -451,6 +451,42 @@ impl fmt::Display for GridBeehive {
     }
 }
 
+pub mod ui {
+    use leptos::*;
+    // use stylers::style;
+    use super::*;
+    #[component]
+    pub fn BeehiveComponent(beehive: GridBeehive) -> impl IntoView {
+        let (value, _set_value) = create_signal(beehive);
+
+        view! {
+            <div
+                class="beehive-container"
+                style:width = move || format!("{}em", 2* value.get().cols() + value.get().rows() - 1)
+                style:grid-template-columns = move || format!("repeat({}, minmax(0, 1fr))", 2* value.get().cols() + value.get().rows() - 1)
+            >
+                {
+                    (0..value.get().rows())
+                        .map(|r| {
+                            let offsets_before = (0..r).map(|_| view! { <div class="offset" /> }).collect_view();
+                            let cells = (0..value.get().cols())
+                                .map(|c| {
+                                    match value.get().get_cell(r,c) {
+                                        Some('_') => view! { <div class="cell empty-cell" /> },
+                                        Some('\0') => view! { <div class="cell" > {'⬡'.to_string()} </div>},
+                                        Some(letter) => view! { <div class="cell"> "" {letter.to_uppercase().to_string()} "" </div> },
+                                        None => view! { <div class="cell empty-cell" /> },
+                                    }
+                                }).collect_view();
+                            let offsets_after = (0..(value.get().rows()-r -1 )).map(|_| view! { <div class="offset" /> }).collect_view();
+
+                            vec![offsets_before, cells, offsets_after].into_iter().collect_view()
+                        }).collect_view()
+                }
+            </div>
+        }
+    }
+}
 // all them layouts
 impl GridBeehive {
     pub fn new_champfered(rows: usize, cols: usize) -> Self {

@@ -13,3 +13,5 @@ serde_derive = "1.0.144"
 derivative = "2.2.0"
 rand = "0.8.5"
 simple-matrix = "0.1.2"
+leptos = { version = "0.5.2", features = ["csr"] }
+leptos_reactive = { version = "0.5.2", features = ["csr"] }

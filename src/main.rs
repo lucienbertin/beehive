@@ -14,57 +14,81 @@ pub mod beehive;
 pub mod grid;
 pub mod grid_beehive;
 
-fn main() -> Result<(), ()> {
-    // let args: Vec<String> = env::args().collect();
-    // let input = &args[1];
-    // println!("{:?}", args);
-    let mut input = String::new();
-    println!("number of rows:");
-    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
-    input = input.replace("\n", "");
-    let rows: usize = input
-        .parse()
-        .expect(format!("cant parse {} as usize", input).as_str());
-    let mut input = String::new();
-    println!("number of cols:");
-    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
-    input = input.replace("\n", "");
-    let cols: usize = input
-        .parse()
-        .expect(format!("cant parse {} as usize", input).as_str());
+use leptos::*;
 
-    let mut input = String::new();
-    println!("number of threads:");
-    let _b1 = std::io::stdin().read_line(&mut input).unwrap();
-    input = input.replace("\n", "");
-    let thread_cnt: usize = input
-        .parse()
-        .expect(format!("cant parse {} as usize", input).as_str());
+/// A simple counter component.
+///
+/// You can use doc comments like this to document your component.
+#[component]
+pub fn SimpleCounter(
+    /// The starting value for the counter
+    initial_value: i32,
+    /// The change that should be applied each time the button is clicked.
+    step: i32,
+) -> impl IntoView {
+    let (value, set_value) = create_signal(initial_value);
 
-    let mut handles = vec![];
-    for i in 0..thread_cnt {
-        let r = *&rows;
-        let c = *&cols;
-        let thread_index = *&i;
-        let handle = std::thread::spawn(move || {
-            let start = Instant::now();
-            // println!("generating a {}x{} grid on thread {}", r, c, thread_index);
-            let res = gen_grid_beehive(r, c).expect("could not get a working grid");
-
-            let elapsed = start.elapsed();
-            println!("{}", res);
-            println!("generated in {:?} on thread {}", elapsed, thread_index);
-        });
-
-        handles.push(handle);
+    view! {
+        <div>
+            <button on:click=move |_| set_value.update(|value| *value = 0)>"Clear"</button>
+            <button on:click=move |_| set_value.update(|value| *value -= step)>"-" {step}</button>
+            <span>"Value: " {value} "!"</span>
+            <button on:click=move |_| set_value.update(|value| *value += step)>"+" {step}</button>
+        </div>
     }
-
-    for handle in handles {
-        let _r = handle.join();
-    }
-
-    Ok(())
 }
+fn main() {
+    leptos::mount_to_body(|| view! { <SimpleCounter initial_value=12 step=3/> })
+}
+
+// fn main() -> Result<(), ()> {
+//     let mut input = String::new();
+//     println!("number of rows:");
+//     let _b1 = std::io::stdin().read_line(&mut input).unwrap();
+//     input = input.replace("\n", "");
+//     let rows: usize = input
+//         .parse()
+//         .expect(format!("cant parse {} as usize", input).as_str());
+//     let mut input = String::new();
+//     println!("number of cols:");
+//     let _b1 = std::io::stdin().read_line(&mut input).unwrap();
+//     input = input.replace("\n", "");
+//     let cols: usize = input
+//         .parse()
+//         .expect(format!("cant parse {} as usize", input).as_str());
+
+//     let mut input = String::new();
+//     println!("number of threads:");
+//     let _b1 = std::io::stdin().read_line(&mut input).unwrap();
+//     input = input.replace("\n", "");
+//     let thread_cnt: usize = input
+//         .parse()
+//         .expect(format!("cant parse {} as usize", input).as_str());
+
+//     let mut handles = vec![];
+//     for i in 0..thread_cnt {
+//         let r = *&rows;
+//         let c = *&cols;
+//         let thread_index = *&i;
+//         let handle = std::thread::spawn(move || {
+//             let start = Instant::now();
+//             // println!("generating a {}x{} grid on thread {}", r, c, thread_index);
+//             let res = gen_grid_beehive(r, c).expect("could not get a working grid");
+
+//             let elapsed = start.elapsed();
+//             println!("{}", res);
+//             println!("generated in {:?} on thread {}", elapsed, thread_index);
+//         });
+
+//         handles.push(handle);
+//     }
+
+//     for handle in handles {
+//         let _r = handle.join();
+//     }
+
+//     Ok(())
+// }
 
 fn _gen_beehive() -> Result<(), ()> {
     let dictionary = dictionary::Dictionary::new()?;
@@ -96,32 +120,51 @@ fn _gen_grid(rows: usize, cols: usize) -> Result<grid::Grid, ()> {
         None => Err(()),
     }
 }
-fn gen_grid_beehive(rows: usize, cols: usize) -> Result<grid_beehive::GridBeehive, ()> {
+fn _gen_grid_beehive(rows: usize, cols: usize) -> Result<grid_beehive::GridBeehive, ()> {
+    use grid_beehive::GridBeehive;
     let dictionary = dictionary::Dictionary::new().unwrap();
 
-    let full =
-        match (rows, cols) {
-            (3, 4) => grid_beehive::GridBeehive::new_343_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (4, 3) => grid_beehive::GridBeehive::new_344_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (4, 4) => grid_beehive::GridBeehive::new_444_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (5, 5) => grid_beehive::GridBeehive::new_5x5_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (5, 6) => grid_beehive::GridBeehive::new_5x6_honeycomb()
-                .recursive_generate(&dictionary, false),
-            (6, 4) => grid_beehive::GridBeehive::new_6444_honeycomb()
-                .recursive_generate(&dictionary, true),
-            (6, 6) => {
-                grid_beehive::GridBeehive::new_6x6_honeycomb().recursive_generate(&dictionary, true)
-            }
-            (7, 7) => {
-                grid_beehive::GridBeehive::new_7x7_honeycomb().recursive_generate(&dictionary, true)
-            }
-            (r, c) => grid_beehive::GridBeehive::new_spotted_champfered(r, c)
-                .recursive_generate(&dictionary, true),
-        };
+    let full = match (rows, cols) {
+        (1, 1) => {
+            let mut empty = GridBeehive::new(4, 4);
+            empty.set_row(0, "n\0\0\0".to_string());
+            empty.set_row(1, "_\0_\0".to_string());
+            empty.set_row(2, "_\0\0\0".to_string());
+            empty.set_row(3, "___s".to_string());
+
+            empty.recursive_generate(&dictionary, false)
+        }
+        (1, 2) => {
+            let mut empty = GridBeehive::new(7, 4);
+            empty.set_row(0, "___n".to_string());
+            empty.set_row(1, "__\0_".to_string());
+            empty.set_row(2, "_\0\0_".to_string());
+            empty.set_row(3, "\0_\0_".to_string());
+            empty.set_row(4, "\0\0__".to_string());
+            empty.set_row(5, "\0___".to_string());
+            empty.set_row(6, "t___".to_string());
+
+            empty.recursive_generate(&dictionary, false)
+        }
+        (1, 3) => {
+            let mut empty = GridBeehive::new(4, 7);
+            empty.set_row(0, "______s".to_string());
+            empty.set_row(1, "___\0\0\0_".to_string());
+            empty.set_row(2, "__\0_\0__".to_string());
+            empty.set_row(3, "t\0\0\0___".to_string());
+
+            empty.recursive_generate(&dictionary, false)
+        }
+        (3, 4) => GridBeehive::new_343_honeycomb().recursive_generate(&dictionary, false),
+        (4, 3) => GridBeehive::new_344_honeycomb().recursive_generate(&dictionary, false),
+        (4, 4) => GridBeehive::new_444_honeycomb().recursive_generate(&dictionary, false),
+        (5, 5) => GridBeehive::new_5x5_honeycomb().recursive_generate(&dictionary, false),
+        (5, 6) => GridBeehive::new_5x6_honeycomb().recursive_generate(&dictionary, false),
+        (6, 4) => GridBeehive::new_6444_honeycomb().recursive_generate(&dictionary, true),
+        (6, 6) => GridBeehive::new_6x6_honeycomb().recursive_generate(&dictionary, true),
+        (7, 7) => GridBeehive::new_7x7_honeycomb().recursive_generate(&dictionary, false),
+        (r, c) => GridBeehive::new_spotted_champfered(r, c).recursive_generate(&dictionary, true),
+    };
 
     match full {
         Some(g) => Ok(g),

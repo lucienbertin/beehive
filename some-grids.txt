@@ -512,3 +512,615 @@ E ■ X ■ ■ ■ I
     M ■ M ■ E
      S ■ E H
 
+
+
+------------------- 3 quandrants grids generated under a minute
+beehive of size 4x4
+N A I L 
+ ⬢ H ⬢ O 
+  ⬢ A S S 
+   ⬢ ⬢ ⬢ S 
+
+generated in 366.993633ms on thread 6
+beehive of size 4x4
+N A I L 
+ ⬢ H ⬢ O 
+  ⬢ A N T 
+   ⬢ ⬢ ⬢ S 
+
+generated in 499.019035ms on thread 14
+beehive of size 4x4
+N O P E 
+ ⬢ U ⬢ N 
+  ⬢ R O D 
+   ⬢ ⬢ ⬢ S 
+
+generated in 525.283957ms on thread 9
+beehive of size 4x4
+N O O N 
+ ⬢ N ⬢ E 
+  ⬢ E W W 
+   ⬢ ⬢ ⬢ S 
+
+generated in 585.515597ms on thread 8
+beehive of size 4x4
+N O O N 
+ ⬢ N ⬢ E 
+  ⬢ E W W 
+   ⬢ ⬢ ⬢ S 
+
+generated in 624.861218ms on thread 11
+beehive of size 4x4
+N A I L 
+ ⬢ H ⬢ O 
+  ⬢ A N T 
+   ⬢ ⬢ ⬢ S 
+
+generated in 796.344791ms on thread 12
+beehive of size 4x4
+N A M E 
+ ⬢ A ⬢ N 
+  ⬢ H A D 
+   ⬢ ⬢ ⬢ S 
+
+generated in 1.08721739s on thread 10
+beehive of size 4x4
+N E E D 
+ ⬢ W ⬢ A 
+  ⬢ W H Y 
+   ⬢ ⬢ ⬢ S 
+
+generated in 1.375137867s on thread 1
+beehive of size 4x4
+N O O N 
+ ⬢ N ⬢ E 
+  ⬢ E W W 
+   ⬢ ⬢ ⬢ S 
+
+generated in 1.614092009s on thread 13
+beehive of size 4x4
+N O N E 
+ ⬢ I ⬢ N 
+  ⬢ L A D 
+   ⬢ ⬢ ⬢ S 
+
+generated in 1.702318854s on thread 3
+beehive of size 4x4
+N A I L 
+ ⬢ H ⬢ O 
+  ⬢ A N T 
+   ⬢ ⬢ ⬢ S 
+
+generated in 2.297352121s on thread 7
+beehive of size 4x4
+N E T S 
+ ⬢ A ⬢ A 
+  ⬢ T H Y 
+   ⬢ ⬢ ⬢ S 
+
+generated in 2.834076683s on thread 0
+beehive of size 4x4
+N E E D 
+ ⬢ W ⬢ A 
+  ⬢ W H Y 
+   ⬢ ⬢ ⬢ S 
+
+generated in 3.270878596s on thread 4
+beehive of size 4x4
+N E T S 
+ ⬢ A ⬢ A 
+  ⬢ T H Y 
+   ⬢ ⬢ ⬢ S 
+
+generated in 3.547731597s on thread 5
+beehive of size 4x4
+N E E D 
+ ⬢ W ⬢ A 
+  ⬢ W H Y 
+   ⬢ ⬢ ⬢ S 
+
+generated in 4.293689452s on thread 2
+lulu@pop-os:~/code/beehive$ cargo run -r
+   Compiling beehive v0.1.0 (/home/lulu/code/beehive)
+    Finished release [optimized] target(s) in 0.91s
+warning: the following packages contain code that will be rejected by a future version of Rust: quick-xml v0.21.0
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running `target/release/beehive`
+number of rows:
+1
+number of cols:
+2
+number of threads:
+15
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ W ⬢ 
+  ⬢ E H ⬢ 
+   S ⬢ Y ⬢ 
+    T ⬢ ⬢ ⬢ 
+     E ⬢ ⬢ ⬢ 
+      P I P E 
+
+generated in 328.650902ms on thread 14
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ W ⬢ 
+  ⬢ E H ⬢ 
+   S ⬢ O ⬢ 
+    T ⬢ ⬢ ⬢ 
+     E ⬢ ⬢ ⬢ 
+      W O R M 
+
+generated in 397.69501ms on thread 13
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ E ⬢ 
+  ⬢ M Y ⬢ 
+   A ⬢ E ⬢ 
+    T ⬢ ⬢ ⬢ 
+     O ⬢ ⬢ ⬢ 
+      M O O N 
+
+generated in 423.733938ms on thread 4
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O H ⬢ 
+   S ⬢ O ⬢ 
+    T ⬢ ⬢ ⬢ 
+     U ⬢ ⬢ ⬢ 
+      D E C K 
+
+generated in 1.322690708s on thread 9
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O W ⬢ 
+   S ⬢ L ⬢ 
+    T ⬢ ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      R A S H 
+
+generated in 1.422605301s on thread 0
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ W ⬢ 
+  ⬢ E H ⬢ 
+   S ⬢ Y ⬢ 
+    T ⬢ ⬢ ⬢ 
+     E ⬢ ⬢ ⬢ 
+      P U R E 
+
+generated in 2.048489626s on thread 8
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O N ⬢ 
+   S ⬢ E ⬢ 
+    T ⬢ ⬢ ⬢ 
+     I ⬢ ⬢ ⬢ 
+      R O D S 
+
+generated in 2.212151358s on thread 10
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O F ⬢ 
+   S ⬢ F ⬢ 
+    T ⬢ ⬢ ⬢ 
+     E ⬢ ⬢ ⬢ 
+      P A R K 
+
+generated in 2.519098769s on thread 5
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ W ⬢ 
+  ⬢ E H ⬢ 
+   S ⬢ Y ⬢ 
+    T ⬢ ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      R U N S 
+
+generated in 3.76781631s on thread 1
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ W ⬢ 
+  ⬢ E H ⬢ 
+   S ⬢ Y ⬢ 
+    T ⬢ ⬢ ⬢ 
+     I ⬢ ⬢ ⬢ 
+      R O O M 
+
+generated in 4.102575522s on thread 11
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ W ⬢ 
+  ⬢ E H ⬢ 
+   S ⬢ O ⬢ 
+    T ⬢ ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      R A C E 
+
+generated in 4.316750578s on thread 12
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O H ⬢ 
+   S ⬢ O ⬢ 
+    T ⬢ ⬢ ⬢ 
+     I ⬢ ⬢ ⬢ 
+      R A C E 
+
+generated in 4.504825791s on thread 6
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O W ⬢ 
+   S ⬢ N ⬢ 
+    T ⬢ ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      R A G E 
+
+generated in 4.572675159s on thread 2
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O N ⬢ 
+   S ⬢ E ⬢ 
+    T ⬢ ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      B A C K 
+
+generated in 5.917009248s on thread 7
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O W ⬢ 
+   S ⬢ N ⬢ 
+    T ⬢ ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      T W I N 
+
+generated in 6.88195058s on thread 3
+lulu@pop-os:~/code/beehive$ cargo run -r
+   Compiling beehive v0.1.0 (/home/lulu/code/beehive)
+    Finished release [optimized] target(s) in 0.90s
+warning: the following packages contain code that will be rejected by a future version of Rust: quick-xml v0.21.0
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running `target/release/beehive`
+number of rows:
+1
+number of cols:
+2
+number of threads:
+15
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ A ⬢ 
+  ⬢ O R ⬢ 
+   L ⬢ E ⬢ 
+    O H ⬢ ⬢ 
+     S ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 399.808813ms on thread 10
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ E ⬢ 
+  ⬢ H A ⬢ 
+   W ⬢ T ⬢ 
+    H R ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 409.549692ms on thread 2
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ A ⬢ 
+  ⬢ H R ⬢ 
+   T ⬢ E ⬢ 
+    E H ⬢ ⬢ 
+     S ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 620.050881ms on thread 9
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ A ⬢ 
+  ⬢ H R ⬢ 
+   T ⬢ M ⬢ 
+    H I ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 647.169512ms on thread 8
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O W ⬢ 
+   M ⬢ E ⬢ 
+    U H ⬢ ⬢ 
+     S ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 650.851374ms on thread 11
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O N ⬢ 
+   M ⬢ E ⬢ 
+    U H ⬢ ⬢ 
+     S ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 766.46334ms on thread 12
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ A ⬢ 
+  ⬢ O R ⬢ 
+   L ⬢ E ⬢ 
+    A H ⬢ ⬢ 
+     S ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 912.248123ms on thread 0
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O W ⬢ 
+   S ⬢ L ⬢ 
+    H I ⬢ ⬢ 
+     O ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 963.322949ms on thread 13
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O N ⬢ 
+   M ⬢ E ⬢ 
+    U H ⬢ ⬢ 
+     S ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 988.117786ms on thread 6
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ E ⬢ 
+  ⬢ H A ⬢ 
+   W ⬢ T ⬢ 
+    H R ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 1.178163383s on thread 3
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ W ⬢ 
+  ⬢ A H ⬢ 
+   D ⬢ Y ⬢ 
+    U P ⬢ ⬢ 
+     S ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 1.352606704s on thread 4
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ E ⬢ 
+  ⬢ H A ⬢ 
+   T ⬢ R ⬢ 
+    H I ⬢ ⬢ 
+     A ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 1.468075451s on thread 5
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O W ⬢ 
+   S ⬢ L ⬢ 
+    H I ⬢ ⬢ 
+     O ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 1.51832997s on thread 7
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O N ⬢ 
+   N ⬢ E ⬢ 
+    E H ⬢ ⬢ 
+     S ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 1.621039773s on thread 1
+beehive of size 7x4
+⬢ ⬢ ⬢ N 
+ ⬢ ⬢ O ⬢ 
+  ⬢ O W ⬢ 
+   S ⬢ L ⬢ 
+    H I ⬢ ⬢ 
+     O ⬢ ⬢ ⬢ 
+      T ⬢ ⬢ ⬢ 
+
+generated in 1.79101036s on thread 14
+lulu@pop-os:~/code/beehive$ cargo run -r
+   Compiling beehive v0.1.0 (/home/lulu/code/beehive)
+    Finished release [optimized] target(s) in 0.92s
+warning: the following packages contain code that will be rejected by a future version of Rust: quick-xml v0.21.0
+note: to see what the problems were, use the option `--future-incompat-report`, or run `cargo report future-incompatibilities --id 1`
+     Running `target/release/beehive`
+number of rows:
+1
+number of cols:
+3
+number of threads:
+15
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T H E ⬢ 
+  ⬢ ⬢ A ⬢ O ⬢ ⬢ 
+   T E N T ⬢ ⬢ ⬢ 
+
+generated in 471.715837ms on thread 8
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ L A D ⬢ 
+  ⬢ ⬢ I ⬢ N ⬢ ⬢ 
+   T O N E ⬢ ⬢ ⬢ 
+
+generated in 509.058865ms on thread 3
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T H Y ⬢ 
+  ⬢ ⬢ U ⬢ A ⬢ ⬢ 
+   T O P S ⬢ ⬢ ⬢ 
+
+generated in 840.90112ms on thread 11
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ D U E ⬢ 
+  ⬢ ⬢ I ⬢ P ⬢ ⬢ 
+   T A D A ⬢ ⬢ ⬢ 
+
+generated in 1.101681022s on thread 12
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ E G G ⬢ 
+  ⬢ ⬢ N ⬢ O ⬢ ⬢ 
+   T O O L ⬢ ⬢ ⬢ 
+
+generated in 1.136667282s on thread 5
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ O W E ⬢ 
+  ⬢ ⬢ H ⬢ E ⬢ ⬢ 
+   T O E S ⬢ ⬢ ⬢ 
+
+generated in 2.2068337s on thread 4
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T O E ⬢ 
+  ⬢ ⬢ A ⬢ Y ⬢ ⬢ 
+   T E N D ⬢ ⬢ ⬢ 
+
+generated in 2.509784952s on thread 6
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T H Y ⬢ 
+  ⬢ ⬢ U ⬢ A ⬢ ⬢ 
+   T O P S ⬢ ⬢ ⬢ 
+
+generated in 4.63894613s on thread 9
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T H Y ⬢ 
+  ⬢ ⬢ U ⬢ A ⬢ ⬢ 
+   T O P S ⬢ ⬢ ⬢ 
+
+generated in 4.726464729s on thread 10
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ O W E ⬢ 
+  ⬢ ⬢ H ⬢ E ⬢ ⬢ 
+   T O E S ⬢ ⬢ ⬢ 
+
+generated in 4.74959237s on thread 13
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ E G G ⬢ 
+  ⬢ ⬢ N ⬢ O ⬢ ⬢ 
+   T O O L ⬢ ⬢ ⬢ 
+
+generated in 4.780035843s on thread 1
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T H E ⬢ 
+  ⬢ ⬢ C ⬢ E ⬢ ⬢ 
+   T A D S ⬢ ⬢ ⬢ 
+
+generated in 5.226434345s on thread 2
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T H O ⬢ 
+  ⬢ ⬢ A ⬢ O ⬢ ⬢ 
+   T E M P ⬢ ⬢ ⬢ 
+
+generated in 5.299229925s on thread 14
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T H Y ⬢ 
+  ⬢ ⬢ A ⬢ O ⬢ ⬢ 
+   T E S T ⬢ ⬢ ⬢ 
+
+generated in 5.641112409s on thread 7
+beehive of size 4x7
+⬢ ⬢ ⬢ ⬢ ⬢ ⬢ S 
+ ⬢ ⬢ ⬢ T H Y ⬢ 
+  ⬢ ⬢ U ⬢ A ⬢ ⬢ 
+   T O P S ⬢ ⬢ ⬢ 
+
+generated in 9.032374666s on thread 0
+
+---- same grid generated without quandrants
+beehive of size 7x7
+⬢ ⬢ ⬢ D A T A 
+ ⬢ ⬢ I ⬢ A ⬢ N 
+  ⬢ C D ⬢ H I T 
+   A ⬢ S ⬢ ⬢ ⬢ S 
+    I S ⬢ O H O ⬢ 
+     M ⬢ H ⬢ O ⬢ ⬢ 
+      S W A M ⬢ ⬢ ⬢ 
+
+generated in 31.357407537s on thread 12
+beehive of size 7x7
+⬢ ⬢ ⬢ S A F E 
+ ⬢ ⬢ T ⬢ I ⬢ D 
+  ⬢ E W ⬢ D I G 
+   P ⬢ O ⬢ ⬢ ⬢ E 
+    O H ⬢ M S S ⬢ 
+     O ⬢ I ⬢ O ⬢ ⬢ 
+      P A T H ⬢ ⬢ ⬢ 
+
+generated in 94.955387842s on thread 1
+
+beehive of size 7x7
+⬢ ⬢ ⬢ R E S T 
+ ⬢ ⬢ A ⬢ A ⬢ Y 
+  ⬢ I T ⬢ R A P 
+   L ⬢ M ⬢ ⬢ ⬢ E 
+    O Y ⬢ R I G ⬢ 
+     G ⬢ I ⬢ D ⬢ ⬢ 
+      S A N E ⬢ ⬢ ⬢ 
+
+generated in 615.230975026s on thread 2
+beehive of size 7x7
+⬢ ⬢ ⬢ L E T S 
+ ⬢ ⬢ A ⬢ A ⬢ W 
+  ⬢ I S ⬢ T E A 
+   D ⬢ S ⬢ ⬢ ⬢ N 
+    U S ⬢ A G O ⬢ 
+     M ⬢ H ⬢ O ⬢ ⬢ 
+      B A R S ⬢ ⬢ ⬢ 
+
+generated in 795.96808779s on thread 11
+beehive of size 7x7
+⬢ ⬢ ⬢ P E T S 
+ ⬢ ⬢ M ⬢ A ⬢ A 
+  ⬢ A S ⬢ T H Y 
+   L ⬢ S ⬢ ⬢ ⬢ S 
+    A D ⬢ O D D ⬢ 
+     I ⬢ H ⬢ O ⬢ ⬢ 
+      D O O R ⬢ ⬢ ⬢ 
+
+generated in 799.383719179s on thread 8
+beehive of size 7x7
+⬢ ⬢ ⬢ S O M E 
+ ⬢ ⬢ N ⬢ U ⬢ N 
+  ⬢ W E ⬢ T A D 
+   O ⬢ T ⬢ ⬢ ⬢ S 
+    D O ⬢ T H Y ⬢ 
+     D ⬢ A ⬢ A ⬢ ⬢ 
+      S E W S ⬢ ⬢ ⬢ 
+
+generated in 1263.753589619s on thread 0

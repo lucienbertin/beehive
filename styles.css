@@ -1,12 +1,26 @@
+body {
+    font-family: 'Source Sans 3', sans-serif;
+    background-color: #eee;
+}
 .beehive-container {
     display: grid;
-    font-size: 2em;
+    font-size: 2rem;
 }
-/* .size-3x3 {
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-    width: 8rem;
-} */
 .cell {
+    text-align: center;
+    grid-column: span 2 / span 2;
+    line-height: 1.73em;
+    background-image: url("/assets/hexagon.png");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 1.73em;
+}
+.cell.is-correct {
+    color: green;
+    background-color: aquamarine;
+}
+.empty-cell {
     text-align: center;
     grid-column: span 2 / span 2;
     line-height: 1.73em;

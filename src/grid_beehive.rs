@@ -475,9 +475,10 @@ impl GridBeehive {
     pub fn new_7x7_honeycomb() -> Self {
         let mut empty = Self::new(7, 7);
         empty.champfer_layout();
-        empty.set_row(1, "__\0___\0".to_string());
-        empty.set_row(3, "\0_\0_\0_\0".to_string());
-        empty.set_row(4, "\0_\0\0_\0_".to_string());
+        empty.set_row(1, "__\0_\0_\0".to_string());
+        empty.set_row(2, "_\0\0_\0\0\0".to_string());
+        empty.set_row(3, "\0_\0___\0".to_string());
+        empty.set_row(4, "\0\0_\0\0\0_".to_string());
         empty.set_row(5, "\0_\0_\0__".to_string());
 
         empty

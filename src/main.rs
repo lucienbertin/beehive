@@ -1,27 +1,39 @@
 use std::result::Result;
 
-use beehive::Beehive;
 use grid_beehive::GridBeehive;
 // use regex::Regex;
 
 pub mod dictionary;
 // mod waffle;
-pub mod beehive;
+pub mod beehive_swap;
 pub mod grid;
 pub mod grid_beehive;
 
 use leptos::*;
 
 fn main() {
-    use grid_beehive::ui::BeehiveComponent;
-    // let mut grid = GridBeehive::new(3,3);
-    // grid.set_row(0, "_ad".to_string());
-    // grid.set_row(1, "h_o".to_string());
-    // grid.set_row(2, "is_".to_string());
+    use beehive_swap::ui::BeehiveSwapComponent;
+    // let mut grid = GridBeehive::new(7,7);
+    // grid.set_row(0, "___safe".to_string());
+    // grid.set_row(1, "__t_i_d".to_string());
+    // grid.set_row(2, "_ew_dig".to_string());
+    // grid.set_row(3, "p_o___e".to_string());
+    // grid.set_row(4, "oh_mss_".to_string());
+    // grid.set_row(5, "o_i_o__".to_string());
+    // grid.set_row(6, "path___".to_string());
+
+
+    let mut grid = GridBeehive::new(6,6);
+    grid.set_row(0, "__yeah".to_string());
+    grid.set_row(1, "_h__so".to_string());
+    grid.set_row(2, "sofa_t".to_string());
+    grid.set_row(3, "t_r_i_".to_string());
+    grid.set_row(4, "a_ex__".to_string());
+    grid.set_row(5, "the___".to_string());
     // let grid = GridBeehive::new_344_honeycomb();
     // let grid = GridBeehive::new_6444_honeycomb();
-    let grid = GridBeehive::new_spotted_champfered(11,15);
-    leptos::mount_to_body(move || view! { <BeehiveComponent beehive=grid.clone()/> })
+    // let grid = GridBeehive::new_spotted_champfered(11,15);
+    leptos::mount_to_body(move || view! { <BeehiveSwapComponent beehive=grid.clone().into()/> })
 }
 
 // fn main() -> Result<(), ()> {
@@ -72,24 +84,6 @@ fn main() {
 
 //     Ok(())
 // }
-
-fn _gen_beehive() -> Result<(), ()> {
-    let dictionary = dictionary::Dictionary::new()?;
-
-    let empty_beehive = beehive::MediumBeehive::gen_empty();
-
-    let res = beehive::_recursive_generate(&dictionary, empty_beehive, 0);
-
-    match res {
-        Some(beehive) => {
-            println!("{:?}", beehive);
-            println!("{}", beehive);
-        }
-        None => println!("no beehive found"),
-    };
-
-    Ok(())
-}
 
 fn _gen_grid(rows: usize, cols: usize) -> Result<grid::Grid, ()> {
     let dictionary = dictionary::Dictionary::new().unwrap();

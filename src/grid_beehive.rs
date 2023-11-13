@@ -472,8 +472,8 @@ pub mod ui {
                             let cells = (0..value.get().cols())
                                 .map(|c| {
                                     match value.get().get_cell(r,c) {
-                                        Some('_') => view! { <div class="cell empty-cell" /> },
-                                        Some('\0') => view! { <div class="cell" > {'⬡'.to_string()} </div>},
+                                        Some('_') => view! { <div class="empty-cell" /> },
+                                        Some('\0') => view! { <div class="cell" /> },
                                         Some(letter) => view! { <div class="cell"> "" {letter.to_uppercase().to_string()} "" </div> },
                                         None => view! { <div class="cell empty-cell" /> },
                                     }

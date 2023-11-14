@@ -17,7 +17,7 @@ pub enum Kind {
     Col,
     Diag,
 }
-#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug, Copy)]
 pub struct Cell {
     row: usize,
     col: usize,
@@ -166,6 +166,7 @@ impl BeehiveSwap {
             ],
             Cell { row: 2, col: 1  } => vec![
                 self.get_solved_row(2).unwrap()[0..4].to_string(),
+                self.get_solved_row(1).unwrap()[1..3].to_string(),
                 self.get_solved_diag(3).unwrap()[0..2].to_string(),
             ],
             Cell { row: 3, col: 0 } => vec![
@@ -207,7 +208,6 @@ impl BeehiveSwap {
 
         let letter = *&self.get_shuffled_cell(cell).unwrap();
         let solved_words = self.get_solved_words(cell);
-        leptos::logging::log!("cell: {}-{} letter: {}, words: {:?}", cell.row, cell.col, letter, solved_words);
 
         // not exactly the right logic here but it'll do for now
         if solved_words.into_iter().any(|w| w.contains(&letter.to_string())) {
@@ -221,6 +221,16 @@ impl BeehiveSwap {
         self.shuffled_layout.set(cell.row, cell.col, val);
     }
 
+    pub fn swap(&mut self, cell_a: &Cell, cell_b: &Cell) {
+
+        let char_a = *(&self.get_shuffled_cell(cell_a).unwrap().clone());
+        let char_b = *(&self.get_shuffled_cell(cell_b).unwrap().clone());
+
+        leptos::logging::log!("swapping {}-{} '{}' with {}-{} '{}", cell_a.row, cell_a.col, char_a, cell_b.row, cell_b.col, char_b);
+
+        self.set_shuffled_cell(cell_a, char_b);
+        self.set_shuffled_cell(cell_b, char_a);
+    }
 
     pub fn shuffle(&mut self, swaps_cnt: usize) {
         let swappable_cells = self.get_swappable_cells();
@@ -232,13 +242,7 @@ impl BeehiveSwap {
             let cell_a = &swap[0];
             let cell_b = &swap[1];
 
-            println!("swapping {:?} with {:?}", cell_a, cell_b);
-
-            let char_a = *(&self.get_shuffled_cell(cell_a).unwrap().clone());
-            let char_b = *(&self.get_shuffled_cell(cell_b).unwrap().clone());
-
-            self.set_shuffled_cell(cell_a, char_b);
-            self.set_shuffled_cell(cell_b, char_a);
+            self.swap(cell_a, cell_b);
         }
     }
 }
@@ -299,46 +303,69 @@ pub mod ui {
     // use stylers::style;
     use super::*;
     #[component]
-    pub fn BeehiveSwapComponent(beehive: BeehiveSwap) -> impl IntoView {
-        // let (value, _set_value) = create_signal(beehive);
+    pub fn BeehiveSwapComponent(initial_beehive: BeehiveSwap) -> impl IntoView {
+        let (beehive, set_beehive) = create_signal(initial_beehive);
+        let (candidate, swap) = create_signal::<Option<Cell>>(None);
+        let (cnt, cnt_set) = create_signal(0);
 
-        let rows = *(&beehive.rows());
-        let cols = *(&beehive.cols());
-
-        let cell_views = (0..beehive.rows())
-        .map(move |r| {
-            let offsets_before = (0..r).map(|_| view! { <div class="offset" /> }).collect_view();
-            let cells = (0..beehive.cols())
-                .map(|c| {
-                    let letter = beehive.get_shuffled_cell(&Cell{row: r, col: c}).unwrap().clone();
-                    let color = beehive.get_cell_color(&Cell{row: r, col: c});
-
-                    match letter {
-                        '_' => view! { <div class="empty-cell" /> },
-                        '\0' => view! { <div class="cell" /> },
-                        letter  => view! {
-                            <div
-                                class="cell"
-                                class:is-green = move || color == Color::Green
-                                class:is-yellow = move || color == Color::Yellow
-                            >
-                                "" {letter.to_uppercase().to_string()} ""
-                            </div>
-                        },
-                    }
-                }).collect_view();
-            let offsets_after = (0..(beehive.rows()-r -1 )).map(|_| view! { <div class="offset" /> }).collect_view();
-
-            vec![offsets_before, cells, offsets_after].into_iter().collect_view()
-        }).collect_view();
-
+        let rows = beehive.with(|bh| bh.rows());
+        let cols = beehive.with(|bh| bh.cols());
         view! {
             <div
                 class="beehive-container"
                 style:width = move || format!("{}em", 2* cols + rows - 1)
                 style:grid-template-columns = move || format!("repeat({}, minmax(0, 1fr))", 2* cols + rows - 1)
             >
-                { cell_views }
+                {
+                    (0..rows).map(move |r| {
+                        let offsets_before = (0..r).map(|_| view! { <div class="offset" /> }).collect_view();
+                        let cells = (0..cols)
+                            .map(|c| {
+                                let cell = Cell{row: r, col: c};
+                                let letter = move || beehive.with(|bh| bh.get_shuffled_cell(&cell).unwrap().clone());
+                                let color = move || beehive.with(|bh| bh.get_cell_color(&cell));
+
+                                match letter() {
+                                    '_' => view! { <div class="empty-cell" /> },
+                                    '\0' => view! { <div class="cell" /> },
+                                    _l  => view! {
+                                        <div
+                                            on:click=move |_| {
+                                                if color() == Color::Green {
+                                                    return;
+                                                }
+                                                if candidate.get().is_none() {
+                                                    swap.update(|val| *val = Some(cell));
+                                                } else {
+                                                    let cell_a = candidate.get().unwrap();
+                                                    let cell_b = cell;
+
+                                                    if cell_a != cell_b {
+                                                        set_beehive.update(|bh| bh.swap(&cell_a, &cell_b));
+                                                        cnt_set.update(|val| * val+=1);
+                                                    }
+
+                                                    swap.update(|val| *val = None);
+                                                }
+                                            }
+                                            class="cell"
+                                            class:is-green = move || color() == Color::Green
+                                            class:is-yellow = move || color() == Color::Yellow
+                                            class:is-swap = move || candidate.get() == Some(cell)
+                                        >
+                                            "" {move || beehive.get().get_shuffled_cell(&cell).unwrap().clone().to_uppercase().to_string()} ""
+                                        </div>
+                                    },
+                                }
+                            }).collect_view();
+                        let offsets_after = (0..(rows-r -1 )).map(|_| view! { <div class="offset" /> }).collect_view();
+
+                        vec![offsets_before, cells, offsets_after].into_iter().collect_view()
+                    }).collect_view()
+                }
+            </div>
+            <div>
+                "Swap counter: " {cnt}
             </div>
         }
     }

@@ -33,7 +33,7 @@ fn main() {
     // let grid = GridBeehive::new_344_honeycomb();
     // let grid = GridBeehive::new_6444_honeycomb();
     // let grid = GridBeehive::new_spotted_champfered(11,15);
-    leptos::mount_to_body(move || view! { <BeehiveSwapComponent beehive=grid.clone().into()/> })
+    leptos::mount_to_body(move || view! { <BeehiveSwapComponent initial_beehive=grid.clone().into()/> })
 }
 
 // fn main() -> Result<(), ()> {

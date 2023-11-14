@@ -15,12 +15,16 @@ body {
     background-size: contain;
     background-repeat: no-repeat;
     height: 1.73em;
+    cursor: pointer;
 }
 .cell.is-green {
     color: green;
 }
 .cell.is-yellow {
-    color: yellow;
+    color: orange;
+}
+.cell.is-swap {
+    color: red;
 }
 .empty-cell {
     text-align: center;

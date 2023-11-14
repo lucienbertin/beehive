@@ -22,8 +22,7 @@ fn main() {
     // grid.set_row(5, "o_i_o__".to_string());
     // grid.set_row(6, "path___".to_string());
 
-
-    let mut grid = GridBeehive::new(6,6);
+    let mut grid = GridBeehive::new(6, 6);
     grid.set_row(0, "__yeah".to_string());
     grid.set_row(1, "_h__so".to_string());
     grid.set_row(2, "sofa_t".to_string());
@@ -33,7 +32,9 @@ fn main() {
     // let grid = GridBeehive::new_344_honeycomb();
     // let grid = GridBeehive::new_6444_honeycomb();
     // let grid = GridBeehive::new_spotted_champfered(11,15);
-    leptos::mount_to_body(move || view! { <BeehiveSwapComponent initial_beehive=grid.clone().into()/> })
+    leptos::mount_to_body(
+        move || view! { <BeehiveSwapComponent initial_beehive=grid.clone().into()/> },
+    )
 }
 
 // fn main() -> Result<(), ()> {

@@ -1,6 +1,6 @@
 use core::fmt;
 
-use rand::{thread_rng, seq::SliceRandom};
+use rand::{seq::SliceRandom, thread_rng};
 use simple_matrix::Matrix;
 
 use crate::grid_beehive::GridBeehive;
@@ -93,7 +93,12 @@ impl BeehiveSwap {
         }
 
         let res: String = (0..(diag + 1))
-            .map(|i| self.get_solved_cell(&Cell { row: diag - i, col: i}))
+            .map(|i| {
+                self.get_solved_cell(&Cell {
+                    row: diag - i,
+                    col: i,
+                })
+            })
             .filter(|opt| opt.is_some())
             .map(|opt| opt.unwrap())
             .collect();
@@ -110,7 +115,7 @@ impl BeehiveSwap {
         let mut cells = vec![];
         for r in 0..self.rows() {
             for c in 0..self.cols() {
-                cells.push(Cell{row: r, col: c});
+                cells.push(Cell { row: r, col: c });
             }
         }
 
@@ -119,7 +124,7 @@ impl BeehiveSwap {
     pub fn get_swappable_cells(&self) -> Vec<Cell> {
         self.get_cells()
             .into_iter()
-            .filter(|c| self.get_solved_cell(c) != Some(&'_') )
+            .filter(|c| self.get_solved_cell(c) != Some(&'_'))
             .filter(|c| c != &Cell { row: 0, col: 2 })
             .filter(|c| c != &Cell { row: 2, col: 2 })
             .filter(|c| c != &Cell { row: 2, col: 3 })
@@ -134,11 +139,9 @@ impl BeehiveSwap {
         match cell {
             Cell { row: 0, col: 2 } => vec![
                 self.get_solved_row(0).unwrap()[2..6].to_string(),
-                self.get_solved_diag(2).unwrap()
+                self.get_solved_diag(2).unwrap(),
             ],
-            Cell { row: 0, col: 3 } => vec![
-                self.get_solved_row(0).unwrap()[2..6].to_string(),
-            ],
+            Cell { row: 0, col: 3 } => vec![self.get_solved_row(0).unwrap()[2..6].to_string()],
             Cell { row: 0, col: 4 } => vec![
                 self.get_solved_row(0).unwrap()[2..6].to_string(),
                 self.get_solved_col(4).unwrap()[0..2].to_string(),
@@ -148,9 +151,7 @@ impl BeehiveSwap {
                 self.get_solved_col(5).unwrap()[0..3].to_string(),
                 self.get_solved_diag(5).unwrap()[2..6].to_string(),
             ],
-            Cell { row: 1, col: 1 } => vec![
-                self.get_solved_diag(2).unwrap()
-            ],
+            Cell { row: 1, col: 1 } => vec![self.get_solved_diag(2).unwrap()],
             Cell { row: 1, col: 4 } => vec![
                 self.get_solved_row(1).unwrap()[4..6].to_string(),
                 self.get_solved_diag(5).unwrap()[2..6].to_string(),
@@ -164,7 +165,7 @@ impl BeehiveSwap {
                 self.get_solved_col(0).unwrap()[2..6].to_string(),
                 self.get_solved_diag(2).unwrap(),
             ],
-            Cell { row: 2, col: 1  } => vec![
+            Cell { row: 2, col: 1 } => vec![
                 self.get_solved_row(2).unwrap()[0..4].to_string(),
                 self.get_solved_row(1).unwrap()[1..3].to_string(),
                 self.get_solved_diag(3).unwrap()[0..2].to_string(),
@@ -173,26 +174,22 @@ impl BeehiveSwap {
                 self.get_solved_col(0).unwrap()[2..6].to_string(),
                 self.get_solved_diag(3).unwrap()[0..2].to_string(),
             ],
-            Cell { row: 3, col: 4  } => vec![
-                self.get_solved_diag(7).unwrap(),
-            ],
-            Cell { row: 4, col: 0 } => vec![
-                self.get_solved_col(0).unwrap()[2..6].to_string(),
-            ],
-            Cell { row: 4, col:  2 } => vec![
+            Cell { row: 3, col: 4 } => vec![self.get_solved_diag(7).unwrap()],
+            Cell { row: 4, col: 0 } => vec![self.get_solved_col(0).unwrap()[2..6].to_string()],
+            Cell { row: 4, col: 2 } => vec![
                 self.get_solved_row(4).unwrap()[2..4].to_string(),
                 self.get_solved_col(2).unwrap()[2..6].to_string(),
                 self.get_solved_diag(6).unwrap()[0..2].to_string(),
             ],
-            Cell { row: 4, col:  3 } => vec![
+            Cell { row: 4, col: 3 } => vec![
                 self.get_solved_row(4).unwrap()[2..4].to_string(),
                 self.get_solved_diag(7).unwrap(),
             ],
-            Cell { row: 5, col:  1 } => vec![
+            Cell { row: 5, col: 1 } => vec![
                 self.get_solved_row(5).unwrap()[0..3].to_string(),
                 self.get_solved_diag(6).unwrap()[0..2].to_string(),
             ],
-            Cell { row: 5, col:  2 } => vec![
+            Cell { row: 5, col: 2 } => vec![
                 self.get_solved_row(5).unwrap()[0..3].to_string(),
                 self.get_solved_col(2).unwrap()[2..6].to_string(),
                 self.get_solved_diag(7).unwrap(),
@@ -210,7 +207,10 @@ impl BeehiveSwap {
         let solved_words = self.get_solved_words(cell);
 
         // not exactly the right logic here but it'll do for now
-        if solved_words.into_iter().any(|w| w.contains(&letter.to_string())) {
+        if solved_words
+            .into_iter()
+            .any(|w| w.contains(&letter.to_string()))
+        {
             return Color::Yellow;
         }
 
@@ -222,11 +222,18 @@ impl BeehiveSwap {
     }
 
     pub fn swap(&mut self, cell_a: &Cell, cell_b: &Cell) {
-
         let char_a = *(&self.get_shuffled_cell(cell_a).unwrap().clone());
         let char_b = *(&self.get_shuffled_cell(cell_b).unwrap().clone());
 
-        leptos::logging::log!("swapping {}-{} '{}' with {}-{} '{}", cell_a.row, cell_a.col, char_a, cell_b.row, cell_b.col, char_b);
+        leptos::logging::log!(
+            "swapping {}-{} '{}' with {}-{} '{}",
+            cell_a.row,
+            cell_a.col,
+            char_a,
+            cell_b.row,
+            cell_b.col,
+            char_b
+        );
 
         self.set_shuffled_cell(cell_a, char_b);
         self.set_shuffled_cell(cell_b, char_a);
@@ -249,12 +256,7 @@ impl BeehiveSwap {
 
 impl fmt::Display for BeehiveSwap {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "beehive-swap of size {}x{}\n",
-            self.rows(),
-            self.cols()
-        )?;
+        write!(f, "beehive-swap of size {}x{}\n", self.rows(), self.cols())?;
         write!(f, "Solved layout\n")?;
         for i in 0..self.rows() {
             let offset: String = (0..i).map(|_i| ' ').collect();
@@ -263,7 +265,7 @@ impl fmt::Display for BeehiveSwap {
                 write!(
                     f,
                     "{} ",
-                    self.get_solved_cell(&Cell{ row: i, col: j })
+                    self.get_solved_cell(&Cell { row: i, col: j })
                         .unwrap_or(&'\0')
                         .to_string()
                         .replace('\0', "⬡")
@@ -283,7 +285,7 @@ impl fmt::Display for BeehiveSwap {
                 write!(
                     f,
                     "{} ",
-                    self.get_shuffled_cell(&Cell{ row: i, col: j })
+                    self.get_shuffled_cell(&Cell { row: i, col: j })
                         .unwrap_or(&'\0')
                         .to_string()
                         .replace('\0', "⬡")
@@ -371,10 +373,9 @@ pub mod ui {
     }
 }
 
-
 #[test]
 fn test_shuffle() {
-    let mut grid = GridBeehive::new(6,6);
+    let mut grid = GridBeehive::new(6, 6);
     grid.set_row(0, "__yeah".to_string());
     grid.set_row(1, "_h__so".to_string());
     grid.set_row(2, "sofa_t".to_string());
@@ -387,8 +388,12 @@ fn test_shuffle() {
     println!("{}", beehive_swap);
 
     for cell in beehive_swap.get_swappable_cells() {
-        println!("cell: {}-{} '{}', part of words {:?}", &cell.row, &cell.col, beehive_swap.get_solved_cell(&cell).unwrap(), beehive_swap.get_solved_words(&cell));
+        println!(
+            "cell: {}-{} '{}', part of words {:?}",
+            &cell.row,
+            &cell.col,
+            beehive_swap.get_solved_cell(&cell).unwrap(),
+            beehive_swap.get_solved_words(&cell)
+        );
     }
-
-
 }

@@ -16,9 +16,11 @@ body {
     background-repeat: no-repeat;
     height: 1.73em;
 }
-.cell.is-correct {
+.cell.is-green {
     color: green;
-    background-color: aquamarine;
+}
+.cell.is-yellow {
+    color: yellow;
 }
 .empty-cell {
     text-align: center;

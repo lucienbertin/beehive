@@ -28,6 +28,13 @@ pub struct Line {
     kind: Kind,
 }
 
+#[derive(Clone, Debug, PartialEq, Copy)]
+pub enum Color {
+    Green,
+    Yellow,
+    White,
+}
+
 impl From<GridBeehive> for BeehiveSwap {
     fn from(value: GridBeehive) -> Self {
         let rows = value.rows();
@@ -46,7 +53,7 @@ impl From<GridBeehive> for BeehiveSwap {
             shuffled_layout,
         };
 
-        swap.shuffle(10);
+        swap.shuffle(20);
 
         swap
     }
@@ -120,6 +127,94 @@ impl BeehiveSwap {
             .filter(|c| c != &Cell { row: 3, col: 2 })
             .filter(|c| c != &Cell { row: 5, col: 0 })
             .collect()
+    }
+
+    fn get_solved_words(&self, cell: &Cell) -> Vec<String> {
+        // hardcode ftw
+        match cell {
+            Cell { row: 0, col: 2 } => vec![
+                self.get_solved_row(0).unwrap()[2..6].to_string(),
+                self.get_solved_diag(2).unwrap()
+            ],
+            Cell { row: 0, col: 3 } => vec![
+                self.get_solved_row(0).unwrap()[2..6].to_string(),
+            ],
+            Cell { row: 0, col: 4 } => vec![
+                self.get_solved_row(0).unwrap()[2..6].to_string(),
+                self.get_solved_col(4).unwrap()[0..2].to_string(),
+            ],
+            Cell { row: 0, col: 5 } => vec![
+                self.get_solved_row(0).unwrap()[2..6].to_string(),
+                self.get_solved_col(5).unwrap()[0..3].to_string(),
+                self.get_solved_diag(5).unwrap()[2..6].to_string(),
+            ],
+            Cell { row: 1, col: 1 } => vec![
+                self.get_solved_diag(2).unwrap()
+            ],
+            Cell { row: 1, col: 4 } => vec![
+                self.get_solved_row(1).unwrap()[4..6].to_string(),
+                self.get_solved_diag(5).unwrap()[2..6].to_string(),
+            ],
+            Cell { row: 1, col: 5 } => vec![
+                self.get_solved_row(1).unwrap()[4..6].to_string(),
+                self.get_solved_col(5).unwrap()[0..3].to_string(),
+            ],
+            Cell { row: 2, col: 0 } => vec![
+                self.get_solved_row(2).unwrap()[0..4].to_string(),
+                self.get_solved_col(0).unwrap()[2..6].to_string(),
+                self.get_solved_diag(2).unwrap(),
+            ],
+            Cell { row: 2, col: 1  } => vec![
+                self.get_solved_row(2).unwrap()[0..4].to_string(),
+                self.get_solved_diag(3).unwrap()[0..2].to_string(),
+            ],
+            Cell { row: 3, col: 0 } => vec![
+                self.get_solved_col(0).unwrap()[2..6].to_string(),
+                self.get_solved_diag(3).unwrap()[0..2].to_string(),
+            ],
+            Cell { row: 3, col: 4  } => vec![
+                self.get_solved_diag(7).unwrap(),
+            ],
+            Cell { row: 4, col: 0 } => vec![
+                self.get_solved_col(0).unwrap()[2..6].to_string(),
+            ],
+            Cell { row: 4, col:  2 } => vec![
+                self.get_solved_row(4).unwrap()[2..4].to_string(),
+                self.get_solved_col(2).unwrap()[2..6].to_string(),
+                self.get_solved_diag(6).unwrap()[0..2].to_string(),
+            ],
+            Cell { row: 4, col:  3 } => vec![
+                self.get_solved_row(4).unwrap()[2..4].to_string(),
+                self.get_solved_diag(7).unwrap(),
+            ],
+            Cell { row: 5, col:  1 } => vec![
+                self.get_solved_row(5).unwrap()[0..3].to_string(),
+                self.get_solved_diag(6).unwrap()[0..2].to_string(),
+            ],
+            Cell { row: 5, col:  2 } => vec![
+                self.get_solved_row(5).unwrap()[0..3].to_string(),
+                self.get_solved_col(2).unwrap()[2..6].to_string(),
+                self.get_solved_diag(7).unwrap(),
+            ],
+            _ => vec![],
+        }
+    }
+
+    pub fn get_cell_color(&self, cell: &Cell) -> Color {
+        if &self.get_solved_cell(cell) == &self.get_shuffled_cell(cell) {
+            return Color::Green;
+        };
+
+        let letter = *&self.get_shuffled_cell(cell).unwrap();
+        let solved_words = self.get_solved_words(cell);
+        leptos::logging::log!("cell: {}-{} letter: {}, words: {:?}", cell.row, cell.col, letter, solved_words);
+
+        // not exactly the right logic here but it'll do for now
+        if solved_words.into_iter().any(|w| w.contains(&letter.to_string())) {
+            return Color::Yellow;
+        }
+
+        Color::White
     }
 
     pub fn set_shuffled_cell(&mut self, cell: &Cell, val: char) {
@@ -215,25 +310,21 @@ pub mod ui {
             let offsets_before = (0..r).map(|_| view! { <div class="offset" /> }).collect_view();
             let cells = (0..beehive.cols())
                 .map(|c| {
-                    let solved_letter = beehive.get_solved_cell(&Cell{row: r, col: c}).unwrap().clone();
-                    let shuffled_letter = beehive.get_shuffled_cell(&Cell{row: r, col: c}).unwrap().clone();
-                    match shuffled_letter {
+                    let letter = beehive.get_shuffled_cell(&Cell{row: r, col: c}).unwrap().clone();
+                    let color = beehive.get_cell_color(&Cell{row: r, col: c});
+
+                    match letter {
                         '_' => view! { <div class="empty-cell" /> },
                         '\0' => view! { <div class="cell" /> },
-                        letter if letter == solved_letter => view! {
-                            <div
-                                class="cell is-correct"
-                            >
-                                "" {solved_letter.to_uppercase().to_string()} ""
-                            </div>
-                        },
-                        letter => view! {
+                        letter  => view! {
                             <div
                                 class="cell"
+                                class:is-green = move || color == Color::Green
+                                class:is-yellow = move || color == Color::Yellow
                             >
                                 "" {letter.to_uppercase().to_string()} ""
                             </div>
-                        }
+                        },
                     }
                 }).collect_view();
             let offsets_after = (0..(beehive.rows()-r -1 )).map(|_| view! { <div class="offset" /> }).collect_view();
@@ -267,6 +358,10 @@ fn test_shuffle() {
     let beehive_swap = BeehiveSwap::from(grid);
 
     println!("{}", beehive_swap);
-    // println!("{:?}", beehive_swap.get_swappable_cells().len());
+
+    for cell in beehive_swap.get_swappable_cells() {
+        println!("cell: {}-{} '{}', part of words {:?}", &cell.row, &cell.col, beehive_swap.get_solved_cell(&cell).unwrap(), beehive_swap.get_solved_words(&cell));
+    }
+
 
 }

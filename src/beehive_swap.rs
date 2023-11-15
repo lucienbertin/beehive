@@ -68,6 +68,7 @@ impl BeehiveSwap {
     pub fn diags(&self) -> usize {
         self.solved_layout.rows() + self.solved_layout.cols() - 1
     }
+    // getters solved layout
     pub fn get_solved_line(&self, line: &Line) -> Option<String> {
         match line.kind {
             Kind::Row => self.get_solved_row(line.index),
@@ -108,6 +109,45 @@ impl BeehiveSwap {
     pub fn get_solved_cell(&self, cell: &Cell) -> Option<&char> {
         self.solved_layout.get(cell.row, cell.col)
     }
+
+    // getters shuffled layout
+    pub fn get_shuffled_line(&self, line: &Line) -> Option<String> {
+        match line.kind {
+            Kind::Row => self.get_shuffled_row(line.index),
+            Kind::Col => self.get_shuffled_col(line.index),
+            Kind::Diag => self.get_shuffled_diag(line.index),
+        }
+    }
+    pub fn get_shuffled_row(&self, row: usize) -> Option<String> {
+        self.shuffled_layout.get_row(row).map(|iter| {
+            let str: String = iter.collect();
+            str
+        })
+    }
+    pub fn get_shuffled_col(&self, col: usize) -> Option<String> {
+        self.shuffled_layout.get_col(col).map(|iter| {
+            let str: String = iter.collect();
+            str
+        })
+    }
+    pub fn get_shuffled_diag(&self, diag: usize) -> Option<String> {
+        if diag >= self.rows() + self.cols() - 1 {
+            return None;
+        }
+
+        let res: String = (0..(diag + 1))
+            .map(|i| {
+                self.get_shuffled_cell(&Cell {
+                    row: diag - i,
+                    col: i,
+                })
+            })
+            .filter(|opt| opt.is_some())
+            .map(|opt| opt.unwrap())
+            .collect();
+
+        Some(res)
+    }
     pub fn get_shuffled_cell(&self, cell: &Cell) -> Option<&char> {
         self.shuffled_layout.get(cell.row, cell.col)
     }
@@ -134,7 +174,7 @@ impl BeehiveSwap {
             .collect()
     }
 
-    fn get_solved_words(&self, cell: &Cell) -> Vec<String> {
+    fn _get_solved_words(&self, cell: &Cell) -> Vec<String> {
         // hardcode ftw
         match cell {
             Cell { row: 0, col: 2 } => vec![
@@ -198,24 +238,214 @@ impl BeehiveSwap {
         }
     }
 
-    pub fn get_cell_color(&self, cell: &Cell) -> Color {
+    fn get_cell_color(&self, cell: &Cell) -> Color {
         if &self.get_solved_cell(cell) == &self.get_shuffled_cell(cell) {
             return Color::Green;
         };
 
-        let letter = *&self.get_shuffled_cell(cell).unwrap();
-        let solved_words = self.get_solved_words(cell);
+        // hardcode ftw
+        // code very easy to understand and maintain
+        let is_yellow = match cell {
+            Cell { row: 0, col: 3 } => {
+                let r_word_solved = self.get_solved_row(0).unwrap()[2..6].to_string();
+                let r_word_shuffled = self.get_shuffled_row(0).unwrap()[2..6].to_string();
 
-        // not exactly the right logic here but it'll do for now
-        if solved_words
-            .into_iter()
-            .any(|w| w.contains(&letter.to_string()))
-        {
-            return Color::Yellow;
+                is_yellow(r_word_solved, r_word_shuffled, 1)
+            }
+            Cell { row: 0, col: 4 } => {
+                let r_word_solved = self.get_solved_row(0).unwrap()[2..6].to_string();
+                let r_word_shuffled = self.get_shuffled_row(0).unwrap()[2..6].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 2);
+
+                let c_word_solved = self.get_solved_col(4).unwrap()[0..2].to_string();
+                let c_word_shuffled = self.get_shuffled_col(4).unwrap()[0..2].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 0);
+
+                r_yellow || c_yellow
+            }
+            Cell { row: 0, col: 5 } => {
+                let r_word_solved = self.get_solved_row(0).unwrap()[2..6].to_string();
+                let r_word_shuffled = self.get_shuffled_row(0).unwrap()[2..6].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 3);
+
+                let c_word_solved = self.get_solved_col(5).unwrap()[0..3].to_string();
+                let c_word_shuffled = self.get_shuffled_col(5).unwrap()[0..3].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 0);
+
+                let d_word_solved = self.get_solved_diag(5).unwrap()[2..6].to_string();
+                let d_word_shuffled = self.get_shuffled_diag(5).unwrap()[2..6].to_string();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 3);
+
+                r_yellow || c_yellow || d_yellow
+            }
+            Cell { row: 1, col: 1 } => {
+                let c_word_solved = self.get_solved_col(1).unwrap()[1..3].to_string();
+                let c_word_shuffled = self.get_shuffled_col(1).unwrap()[1..3].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 0);
+
+                let d_word_solved = self.get_solved_diag(2).unwrap();
+                let d_word_shuffled = self.get_shuffled_diag(2).unwrap();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 1);
+
+                c_yellow || d_yellow
+            }
+            Cell { row: 1, col: 4 } => {
+                let r_word_solved = self.get_solved_row(1).unwrap()[4..6].to_string();
+                let r_word_shuffled = self.get_shuffled_row(1).unwrap()[4..6].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 0);
+
+                let c_word_solved = self.get_solved_col(4).unwrap()[0..2].to_string();
+                let c_word_shuffled = self.get_shuffled_col(4).unwrap()[0..2].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 1);
+
+                let d_word_solved = self.get_solved_diag(5).unwrap()[2..6].to_string();
+                let d_word_shuffled = self.get_shuffled_diag(5).unwrap()[2..6].to_string();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 2);
+
+                r_yellow || c_yellow || d_yellow
+            }
+            Cell { row: 1, col: 5 } => {
+                let r_word_solved = self.get_solved_row(1).unwrap()[4..6].to_string();
+                let r_word_shuffled = self.get_shuffled_row(1).unwrap()[4..6].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 1);
+
+                let c_word_solved = self.get_solved_col(5).unwrap()[0..3].to_string();
+                let c_word_shuffled = self.get_shuffled_col(5).unwrap()[0..3].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 1);
+
+                r_yellow || c_yellow
+            }
+            Cell { row: 2, col: 0 } => {
+                let r_word_solved = self.get_solved_row(2).unwrap()[0..4].to_string();
+                let r_word_shuffled = self.get_shuffled_row(2).unwrap()[0..4].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 0);
+
+                let c_word_solved = self.get_solved_col(0).unwrap()[2..6].to_string();
+                let c_word_shuffled = self.get_shuffled_col(0).unwrap()[2..6].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 0);
+
+                let d_word_solved = self.get_solved_diag(2).unwrap();
+                let d_word_shuffled = self.get_shuffled_diag(2).unwrap();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 0);
+
+                r_yellow || c_yellow || d_yellow
+            }
+            Cell { row: 2, col: 1 } => {
+                let r_word_solved = self.get_solved_row(2).unwrap()[0..4].to_string();
+                let r_word_shuffled = self.get_shuffled_row(2).unwrap()[0..4].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 1);
+
+                let c_word_solved = self.get_solved_col(1).unwrap()[1..3].to_string();
+                let c_word_shuffled = self.get_shuffled_col(1).unwrap()[1..3].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 1);
+
+                let d_word_solved = self.get_solved_diag(3).unwrap()[0..2].to_string();
+                let d_word_shuffled = self.get_shuffled_diag(3).unwrap()[0..2].to_string();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 1);
+
+                r_yellow || c_yellow || d_yellow
+            }
+            Cell { row: 3, col: 0 } => {
+                let c_word_solved = self.get_solved_col(0).unwrap()[2..6].to_string();
+                let c_word_shuffled = self.get_shuffled_col(0).unwrap()[2..6].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 1);
+
+                let d_word_solved = self.get_solved_diag(3).unwrap()[0..2].to_string();
+                let d_word_shuffled = self.get_shuffled_diag(3).unwrap()[0..2].to_string();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 0);
+
+                c_yellow || d_yellow
+            }
+            Cell { row: 3, col: 4 } => {
+                let d_word_solved = self.get_solved_diag(7).unwrap();
+                let d_word_shuffled = self.get_shuffled_diag(7).unwrap();
+                is_yellow(d_word_solved, d_word_shuffled, 2)
+            }
+            Cell { row: 4, col: 0 } => {
+                let c_word_solved = self.get_solved_col(0).unwrap()[2..6].to_string();
+                let c_word_shuffled = self.get_shuffled_col(0).unwrap()[2..6].to_string();
+                is_yellow(c_word_solved, c_word_shuffled, 2)
+            }
+            Cell { row: 4, col: 2 } => {
+                let r_word_solved = self.get_solved_row(4).unwrap()[2..4].to_string();
+                let r_word_shuffled = self.get_shuffled_row(4).unwrap()[2..4].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 0);
+
+                let c_word_solved = self.get_solved_col(2).unwrap()[2..6].to_string();
+                let c_word_shuffled = self.get_shuffled_col(2).unwrap()[2..6].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 2);
+
+                let d_word_solved = self.get_solved_diag(6).unwrap()[0..2].to_string();
+                let d_word_shuffled = self.get_shuffled_diag(6).unwrap()[0..2].to_string();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 1);
+
+                r_yellow || c_yellow || d_yellow
+            }
+            Cell { row: 4, col: 3 } => {
+                let r_word_solved = self.get_solved_row(4).unwrap()[2..4].to_string();
+                let r_word_shuffled = self.get_shuffled_row(4).unwrap()[2..4].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 1);
+
+                let d_word_solved = self.get_solved_diag(7).unwrap();
+                let d_word_shuffled = self.get_shuffled_diag(7).unwrap();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 1);
+
+                r_yellow || d_yellow
+            }
+            Cell { row: 5, col: 1 } => {
+                let r_word_solved = self.get_solved_row(5).unwrap()[0..3].to_string();
+                let r_word_shuffled = self.get_shuffled_row(5).unwrap()[0..3].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 1);
+
+                let d_word_solved = self.get_solved_diag(6).unwrap()[0..2].to_string();
+                let d_word_shuffled = self.get_shuffled_diag(6).unwrap()[0..2].to_string();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 0);
+    
+                r_yellow || d_yellow
+            }
+            Cell { row: 5, col: 2 } => {
+                let r_word_solved = self.get_solved_row(5).unwrap()[0..3].to_string();
+                let r_word_shuffled = self.get_shuffled_row(5).unwrap()[0..3].to_string();
+                let r_yellow = is_yellow(r_word_solved, r_word_shuffled, 2);
+
+                let c_word_solved = self.get_solved_col(2).unwrap()[2..6].to_string();
+                let c_word_shuffled = self.get_shuffled_col(2).unwrap()[2..6].to_string();
+                let c_yellow = is_yellow(c_word_solved, c_word_shuffled, 3);
+
+                let d_word_solved = self.get_solved_diag(7).unwrap();
+                let d_word_shuffled = self.get_shuffled_diag(7).unwrap();
+                let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 0);
+
+                r_yellow || c_yellow || d_yellow
+            }
+            _ => false,
+        };
+
+        if is_yellow {
+            Color::Yellow
+        } else {
+            Color::White
         }
-
-        Color::White
     }
+
+    // pub fn get_cell_color(&self, cell: &Cell) -> Color {
+    //     if &self.get_solved_cell(cell) == &self.get_shuffled_cell(cell) {
+    //         return Color::Green;
+    //     };
+
+    //     let letter = *&self.get_shuffled_cell(cell).unwrap();
+    //     let solved_words = self.get_solved_words(cell);
+
+    //     // not exactly the right logic here but it'll do for now
+    //     if solved_words
+    //         .into_iter()
+    //         .any(|w| w.contains(&letter.to_string()))
+    //     {
+    //         return Color::Yellow;
+    //     }
+
+    //     Color::White
+    // }
 
     pub fn set_shuffled_cell(&mut self, cell: &Cell, val: char) {
         self.shuffled_layout.set(cell.row, cell.col, val);
@@ -224,16 +454,6 @@ impl BeehiveSwap {
     pub fn swap(&mut self, cell_a: &Cell, cell_b: &Cell) {
         let char_a = *(&self.get_shuffled_cell(cell_a).unwrap().clone());
         let char_b = *(&self.get_shuffled_cell(cell_b).unwrap().clone());
-
-        leptos::logging::log!(
-            "swapping {}-{} '{}' with {}-{} '{}",
-            cell_a.row,
-            cell_a.col,
-            char_a,
-            cell_b.row,
-            cell_b.col,
-            char_b
-        );
 
         self.set_shuffled_cell(cell_a, char_b);
         self.set_shuffled_cell(cell_b, char_a);
@@ -252,6 +472,27 @@ impl BeehiveSwap {
             self.swap(cell_a, cell_b);
         }
     }
+}
+
+fn is_yellow(solved: String, shuffled: String, index: usize) -> bool {
+    let letter = shuffled.chars().nth(index).unwrap();
+    let mut solved = solved;
+    let mut shuffled = shuffled;
+
+    for i in 0..solved.len() {
+        if solved.chars().nth(i).unwrap()
+            == shuffled.chars().nth(i).unwrap()
+        {
+            solved = solved.replacen(solved.chars().nth(i).unwrap(), "=", 1);
+            shuffled = shuffled.replacen(shuffled.chars().nth(i).unwrap(),"=",1);
+        }
+    }
+    for i in 0..index {
+        let shuffled_char = shuffled.chars().nth(i).unwrap();
+        solved = solved.replace(shuffled_char, "~");
+    }
+
+    solved.contains(letter)
 }
 
 impl fmt::Display for BeehiveSwap {
@@ -373,27 +614,27 @@ pub mod ui {
     }
 }
 
-#[test]
-fn test_shuffle() {
-    let mut grid = GridBeehive::new(6, 6);
-    grid.set_row(0, "__yeah".to_string());
-    grid.set_row(1, "_h__so".to_string());
-    grid.set_row(2, "sofa_t".to_string());
-    grid.set_row(3, "t_r_i_".to_string());
-    grid.set_row(4, "a_ex__".to_string());
-    grid.set_row(5, "the___".to_string());
+// #[test]
+// fn test_shuffle() {
+//     let mut grid = GridBeehive::new(6, 6);
+//     grid.set_row(0, "__yeah".to_string());
+//     grid.set_row(1, "_h__so".to_string());
+//     grid.set_row(2, "sofa_t".to_string());
+//     grid.set_row(3, "t_r_i_".to_string());
+//     grid.set_row(4, "a_ex__".to_string());
+//     grid.set_row(5, "the___".to_string());
 
-    let beehive_swap = BeehiveSwap::from(grid);
+//     let beehive_swap = BeehiveSwap::from(grid);
 
-    println!("{}", beehive_swap);
+//     println!("{}", beehive_swap);
 
-    for cell in beehive_swap.get_swappable_cells() {
-        println!(
-            "cell: {}-{} '{}', part of words {:?}",
-            &cell.row,
-            &cell.col,
-            beehive_swap.get_solved_cell(&cell).unwrap(),
-            beehive_swap.get_solved_words(&cell)
-        );
-    }
-}
+//     for cell in beehive_swap.get_swappable_cells() {
+//         println!(
+//             "cell: {}-{} '{}', part of words {:?}",
+//             &cell.row,
+//             &cell.col,
+//             beehive_swap.get_solved_cell(&cell).unwrap(),
+//             beehive_swap.get_solved_words(&cell)
+//         );
+//     }
+// }

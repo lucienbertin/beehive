@@ -1,4 +1,4 @@
-use std::result::Result;
+use std::{result::Result, time::Instant};
 
 use grid_beehive::GridBeehive;
 // use regex::Regex;
@@ -6,34 +6,54 @@ use grid_beehive::GridBeehive;
 pub mod dictionary;
 // mod waffle;
 pub mod beehive_swap;
+pub mod beehive_serde;
 pub mod grid;
 pub mod grid_beehive;
 
 use leptos::*;
 
+use crate::{beehive_serde::{append_file, fetch_beehive}, beehive_swap::BeehiveSwap};
+
 fn main() {
     use beehive_swap::ui::BeehiveSwapComponent;
-    // let mut grid = GridBeehive::new(7,7);
-    // grid.set_row(0, "___safe".to_string());
-    // grid.set_row(1, "__t_i_d".to_string());
-    // grid.set_row(2, "_ew_dig".to_string());
-    // grid.set_row(3, "p_o___e".to_string());
-    // grid.set_row(4, "oh_mss_".to_string());
-    // grid.set_row(5, "o_i_o__".to_string());
-    // grid.set_row(6, "path___".to_string());
+    // let dictionary = dictionary::Dictionary::new().unwrap();
+    leptos::logging::log!("retrieving beehive");
+    let once = create_resource(|| (), fetch_beehive);
+    // let grid = GridBeehive::new(6, 6).recursive_generate(&dictionary, false).unwrap();
+    // let mut grid = GridBeehive::new(6, 6);
+    // grid.set_row(0, "__yeah".to_string());
+    // grid.set_row(1, "_h__so".to_string());
+    // grid.set_row(2, "sofa_t".to_string());
+    // grid.set_row(3, "t_r_i_".to_string());
+    // grid.set_row(4, "a_ex__".to_string());
+    // grid.set_row(5, "the___".to_string());
+    // let beehive: BeehiveSwap = match fetch_beehive().await? {
+    //     Ok(bh) => bh,
+    //     Err(()) => {
+    //         leptos::logging::log!("couldn't retrieve a beehive :'(");
+    //         let mut grid = GridBeehive::new(6, 6);
+    //         grid.set_row(0, "__yeah".to_string());
+    //         grid.set_row(1, "_h__so".to_string());
+    //         grid.set_row(2, "sofa_t".to_string());
+    //         grid.set_row(3, "t_r_i_".to_string());
+    //         grid.set_row(4, "a_ex__".to_string());
+    //         grid.set_row(5, "the___".to_string());
 
-    let mut grid = GridBeehive::new(6, 6);
-    grid.set_row(0, "__yeah".to_string());
-    grid.set_row(1, "_h__so".to_string());
-    grid.set_row(2, "sofa_t".to_string());
-    grid.set_row(3, "t_r_i_".to_string());
-    grid.set_row(4, "a_ex__".to_string());
-    grid.set_row(5, "the___".to_string());
-    // let grid = GridBeehive::new_344_honeycomb();
-    // let grid = GridBeehive::new_6444_honeycomb();
-    // let grid = GridBeehive::new_spotted_champfered(11,15);
+    //         grid.into()
+    //     }
+    // };
+
+    leptos::logging::log!("grid got !");
     leptos::mount_to_body(
-        move || view! { <BeehiveSwapComponent initial_beehive=grid.clone().into()/> },
+        move || view! {
+            {move || match once.get() {
+                None => view! { <p>"Loading..."</p> }.into_view(),
+                Some(res) => match res {
+                    Ok(bh) => view! { <BeehiveSwapComponent initial_beehive=bh.clone().into()/> }.into_view(),
+                    Err(_) => view! { <div>"error while loading a beehive"</div> }.into_view(),
+                }.into_view()
+            }}
+        }
     )
 }
 
@@ -74,6 +94,11 @@ fn main() {
 //             let elapsed = start.elapsed();
 //             println!("{}", res);
 //             println!("generated in {:?} on thread {}", elapsed, thread_index);
+
+//             match append_file(res) {
+//                 Ok(()) => println!("beehive persisted to file"),
+//                 Err(()) => println!("error while persisting beehive"),
+//             }
 //         });
 
 //         handles.push(handle);

@@ -548,14 +548,43 @@ pub mod ui {
         let (beehive, set_beehive) = create_signal(initial_beehive);
         let (candidate, swap) = create_signal::<Option<Cell>>(None);
         let (cnt, cnt_set) = create_signal(0);
+        let (mouse_position, set_position) = create_signal((0, 0));
+
+        // let dragging = candidate.with(|c| c.is_some());
+        // let dragged_letter = move || {
+        //     match candidate.get() {
+        //         Some(cell) => Some(beehive.get().get_shuffled_cell(&cell)),
+        //         None => None
+        //     }
+        // };
 
         let rows = beehive.with(|bh| bh.rows());
         let cols = beehive.with(|bh| bh.cols());
         view! {
+            <Show when=move || { candidate.get().is_some()}>
+                <div
+                    class="cell dragged-cell"
+                    style:left=move || format!("{}px", mouse_position.get().0)
+                    style:top=move || format!("{}px", mouse_position.get().1)
+                >"" {
+                    let cell = candidate.get().unwrap();
+                    let letter = beehive.get().get_shuffled_cell(&cell).unwrap().clone();
+
+                    letter.to_uppercase().to_string()
+
+                } ""</div>
+            </Show>
             <div
+                on:mouseup=move |_| {
+                    swap.set(None);
+                }
                 class="beehive-container"
+                class:is-dragging= move || candidate.get().is_some()
                 style:width = move || format!("{}em", 2* cols + rows - 1)
                 style:grid-template-columns = move || format!("repeat({}, minmax(0, 1fr))", 2* cols + rows - 1)
+                on:mousemove = move |evt| {
+                    set_position.set((evt.client_x(), evt.client_y()))
+                }
             >
                 {
                     (0..rows).map(move |r| {
@@ -571,13 +600,16 @@ pub mod ui {
                                     '\0' => view! { <div class="cell" /> },
                                     _l  => view! {
                                         <div
-                                            on:click=move |_| {
+                                            on:mousedown=move |_| {
                                                 if color() == Color::Green {
                                                     return;
                                                 }
                                                 if candidate.get().is_none() {
                                                     swap.update(|val| *val = Some(cell));
-                                                } else {
+                                                }
+                                            }
+                                            on:mouseup= move |_| {
+                                                if candidate.get().is_some() {
                                                     let cell_a = candidate.get().unwrap();
                                                     let cell_b = cell;
 
@@ -586,7 +618,7 @@ pub mod ui {
                                                         cnt_set.update(|val| * val+=1);
                                                     }
 
-                                                    swap.update(|val| *val = None);
+                                                    // swap.set(|val| *val = None);
                                                 }
                                             }
                                             class="cell"

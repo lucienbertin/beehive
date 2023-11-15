@@ -74,11 +74,11 @@ pub async fn fetch_beehive(_c: ()) -> Result<BeehiveSerde, ()> {
     let mut beehives: Vec<BeehiveSerde> = reqwasm::http::Request::get("/assets/beehives.json")
         .send()
         .await
-        .map_err(|e| ())?
+        .map_err(|_e| ())?
         // convert it to JSON
         .json()
         .await
-        .map_err(|e| ())?;
+        .map_err(|_e| ())?;
 
     beehives.shuffle(&mut thread_rng());
 

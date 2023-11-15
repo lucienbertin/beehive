@@ -9,4 +9,8 @@ edition = "2021"
 rand = "0.8.5"
 simple-matrix = "0.1.2"
 leptos = { version = "0.5.2", features = ["csr"] }
+serde = { version = "1.0.192", features = ["serde_derive"] }
+serde_derive = "1.0.192"
+serde_json = "1.0.108"
+reqwasm = "0.5.0"
 # stylers = "0.3.2"

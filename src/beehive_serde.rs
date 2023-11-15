@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
 use rand::{seq::SliceRandom, thread_rng};
+use serde::{Deserialize, Serialize};
 
-use crate::grid_beehive::GridBeehive;
 use crate::beehive_swap::BeehiveSwap;
+use crate::grid_beehive::GridBeehive;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BeehiveSerde {
@@ -17,9 +17,7 @@ impl From<GridBeehive> for BeehiveSerde {
             layout.push(value.get_row(r).unwrap());
         }
 
-        Self {
-            layout
-        }
+        Self { layout }
     }
 }
 
@@ -34,7 +32,7 @@ impl Into<GridBeehive> for BeehiveSerde {
         let mut beehive = GridBeehive::new(rows, cols);
         for row in 0..rows {
             beehive.set_row(row, self.layout.get(row).unwrap().clone());
-        };
+        }
 
         beehive
     }
@@ -61,7 +59,11 @@ pub fn append_file(beehive: GridBeehive) -> std::result::Result<(), ()> {
     let serialized = serde_json::to_string(&beehives).map_err(|_| ())?;
 
     use std::io::Write;
-    let mut file = std::fs::OpenOptions::new().write(true).truncate(true).open(path).map_err(|_| ())?;
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(path)
+        .map_err(|_| ())?;
     file.write(serialized.as_bytes()).map_err(|_| ())?;
 
     Ok(())
@@ -82,7 +84,7 @@ pub async fn fetch_beehive(_c: ()) -> Result<BeehiveSerde, ()> {
 
     match beehives.get(0) {
         Some(bh) => Ok(bh.clone()),
-        None => Err(())
+        None => Err(()),
     }
 }
 

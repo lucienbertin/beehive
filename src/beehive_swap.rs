@@ -400,7 +400,7 @@ impl BeehiveSwap {
                 let d_word_solved = self.get_solved_diag(6).unwrap()[0..2].to_string();
                 let d_word_shuffled = self.get_shuffled_diag(6).unwrap()[0..2].to_string();
                 let d_yellow = is_yellow(d_word_solved, d_word_shuffled, 0);
-    
+
                 r_yellow || d_yellow
             }
             Cell { row: 5, col: 2 } => {
@@ -480,11 +480,9 @@ fn is_yellow(solved: String, shuffled: String, index: usize) -> bool {
     let mut shuffled = shuffled;
 
     for i in 0..solved.len() {
-        if solved.chars().nth(i).unwrap()
-            == shuffled.chars().nth(i).unwrap()
-        {
+        if solved.chars().nth(i).unwrap() == shuffled.chars().nth(i).unwrap() {
             solved = solved.replacen(solved.chars().nth(i).unwrap(), "=", 1);
-            shuffled = shuffled.replacen(shuffled.chars().nth(i).unwrap(),"=",1);
+            shuffled = shuffled.replacen(shuffled.chars().nth(i).unwrap(), "=", 1);
         }
     }
     for i in 0..index {

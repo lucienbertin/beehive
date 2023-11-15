@@ -5,14 +5,17 @@ use grid_beehive::GridBeehive;
 
 pub mod dictionary;
 // mod waffle;
-pub mod beehive_swap;
 pub mod beehive_serde;
+pub mod beehive_swap;
 pub mod grid;
 pub mod grid_beehive;
 
 use leptos::*;
 
-use crate::{beehive_serde::{append_file, fetch_beehive}, beehive_swap::BeehiveSwap};
+use crate::{
+    beehive_serde::{append_file, fetch_beehive},
+    beehive_swap::BeehiveSwap,
+};
 
 fn main() {
     use beehive_swap::ui::BeehiveSwapComponent;
@@ -44,8 +47,8 @@ fn main() {
     // };
 
     leptos::logging::log!("grid got !");
-    leptos::mount_to_body(
-        move || view! {
+    leptos::mount_to_body(move || {
+        view! {
             {move || match once.get() {
                 None => view! { <p>"Loading..."</p> }.into_view(),
                 Some(res) => match res {
@@ -54,7 +57,7 @@ fn main() {
                 }.into_view()
             }}
         }
-    )
+    })
 }
 
 // fn main() -> Result<(), ()> {

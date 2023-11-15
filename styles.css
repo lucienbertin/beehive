@@ -1,0 +1,36 @@
+body {
+    font-family: 'Source Sans 3', sans-serif;
+    background-color: #eee;
+}
+.beehive-container {
+    display: grid;
+    font-size: 2rem;
+}
+.cell {
+    text-align: center;
+    grid-column: span 2 / span 2;
+    line-height: 1.73em;
+    background-image: url("/assets/hexagon.png");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 1.73em;
+    cursor: pointer;
+}
+.cell.is-green {
+    color: green;
+}
+.cell.is-yellow {
+    color: orange;
+}
+.cell.is-swap {
+    color: red;
+}
+.empty-cell {
+    text-align: center;
+    grid-column: span 2 / span 2;
+    line-height: 1.73em;
+}
+.offset {
+    grid-column: span 1 / span 1;
+}

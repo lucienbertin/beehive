@@ -6,12 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-regex = "1.9.6"
-quick-xml = { version = "0.21", features = [ "serialize" ] }
-serde = { version = "1.0", features = [ "derive" ] }
-serde_derive = "1.0.144"
-derivative = "2.2.0"
 rand = "0.8.5"
 simple-matrix = "0.1.2"
 leptos = { version = "0.5.2", features = ["csr"] }
-leptos_reactive = { version = "0.5.2", features = ["csr"] }
+serde = { version = "1.0.192", features = ["serde_derive"] }
+serde_derive = "1.0.192"
+serde_json = "1.0.108"
+reqwasm = "0.5.0"
+# stylers = "0.3.2"

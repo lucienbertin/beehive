@@ -13,4 +13,5 @@ serde = { version = "1.0.192", features = ["serde_derive"] }
 serde_derive = "1.0.192"
 serde_json = "1.0.108"
 reqwasm = "0.5.0"
+web-sys = { version = "0.3.65", features = ["TouchList", "Touch", "Event", "EventTarget", "Element"] }
 # stylers = "0.3.2"

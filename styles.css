@@ -3,10 +3,20 @@ body {
     background-color: #eee;
 }
 .beehive-container {
+    position: relative;
     display: grid;
     font-size: 2rem;
+    touch-action: none;
+    margin: auto;
 }
 .cell {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     text-align: center;
     grid-column: span 2 / span 2;
     line-height: 1.73em;
@@ -24,7 +34,14 @@ body {
     color: orange;
 }
 .cell.is-swap {
-    color: red;
+    opacity: .25;
+}
+.cell.dragged-cell {
+    position: absolute;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.7rem;
+    opacity: .75;
 }
 .empty-cell {
     text-align: center;
@@ -33,4 +50,7 @@ body {
 }
 .offset {
     grid-column: span 1 / span 1;
+}
+.is-dragging .cell.is-swappable:hover {
+    opacity: .5;
 }

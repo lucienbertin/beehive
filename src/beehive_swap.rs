@@ -541,19 +541,50 @@ impl fmt::Display for BeehiveSwap {
 
 pub mod ui {
     use leptos::*;
+    use web_sys::TouchEvent;
     // use stylers::style;
     use super::*;
     #[component]
     pub fn BeehiveSwapComponent(initial_beehive: BeehiveSwap) -> impl IntoView {
         let (beehive, set_beehive) = create_signal(initial_beehive);
-        let (candidate, swap) = create_signal::<Option<Cell>>(None);
+        let (swap_candidate, set_swap_candidate) = create_signal::<Option<Cell>>(None);
         let (cnt, cnt_set) = create_signal(0);
+        let (mouse_position, set_position) = create_signal((0, 0));
 
         let rows = beehive.with(|bh| bh.rows());
         let cols = beehive.with(|bh| bh.cols());
         view! {
+            <Show when=move || { swap_candidate.get().is_some()}>
+                <div
+                    class="cell dragged-cell"
+                    style:left=move || format!("{}px", mouse_position.get().0 + 4)
+                    style:top=move || format!("{}px", mouse_position.get().1 + 4)
+                >"" {
+                    let cell = swap_candidate.get().unwrap();
+                    let letter = beehive.get().get_shuffled_cell(&cell).unwrap().clone();
+
+                    letter.to_uppercase().to_string()
+
+                } ""</div>
+            </Show>
             <div
+                on:mouseup=move |_| set_swap_candidate.set(None)
+                on:touchend=move |_| {
+                    leptos::logging::log!("clear swap");
+                    set_swap_candidate.set(None)
+                }
+                on:touchmove=move |evt: leptos::ev::TouchEvent| {
+                    let first_touch = evt.touches().item(0).expect("a touchmove event without any touches");
+                    set_position.set((first_touch.client_x(), first_touch.client_y()))
+                }
+                on:mousemove = move |evt| {
+                    set_position.set((evt.client_x(), evt.client_y()))
+                }
+                on:touchcancel=move |_ev| {
+                    leptos::logging::log!("touchcancel on container, evt {:?}", _ev);
+                }
                 class="beehive-container"
+                class:is-dragging= move || swap_candidate.get().is_some()
                 style:width = move || format!("{}em", 2* cols + rows - 1)
                 style:grid-template-columns = move || format!("repeat({}, minmax(0, 1fr))", 2* cols + rows - 1)
             >
@@ -565,34 +596,88 @@ pub mod ui {
                                 let cell = Cell{row: r, col: c};
                                 let letter = move || beehive.with(|bh| bh.get_shuffled_cell(&cell).unwrap().clone());
                                 let color = move || beehive.with(|bh| bh.get_cell_color(&cell));
+                                let start_swapping = move || {
+                                    leptos::logging::log!("start_swapping, cell {:?}, candidate: {:?}", cell, swap_candidate.get());
+                                    if color() == Color::Green {
+                                        return;
+                                    }
+                                    if swap_candidate.get().is_none() {
+                                        set_swap_candidate.update(|val| *val = Some(cell));
+                                    }
+                                };
+                                let swap = move || {
+                                    leptos::logging::log!("stop_swapping, cell {:?}, candidate: {:?}", cell, swap_candidate.get());
+
+                                    if swap_candidate.get().is_some() {
+                                        let cell_a = swap_candidate.get().unwrap();
+                                        let cell_b = cell;
+
+                                        if cell_a != cell_b {
+                                            set_beehive.update(|bh| bh.swap(&cell_a, &cell_b));
+                                            cnt_set.update(|val| * val+=1);
+                                        }
+                                    }
+                                };
+                                let swap_with = move |cell_b: &Cell| {
+                                    if swap_candidate.get().is_some() {
+                                        let cell_a = &swap_candidate.get().unwrap();
+
+                                        if cell_a != cell_b {
+                                            set_beehive.update(|bh| bh.swap(&cell_a, &cell_b));
+                                            cnt_set.update(|val| * val+=1);
+                                        }
+                                    }
+                                };
 
                                 match letter() {
                                     '_' => view! { <div class="empty-cell" /> },
                                     '\0' => view! { <div class="cell" /> },
                                     _l  => view! {
                                         <div
-                                            on:click=move |_| {
-                                                if color() == Color::Green {
-                                                    return;
-                                                }
-                                                if candidate.get().is_none() {
-                                                    swap.update(|val| *val = Some(cell));
-                                                } else {
-                                                    let cell_a = candidate.get().unwrap();
-                                                    let cell_b = cell;
+                                            row=r
+                                            col=c
+                                            on:mousedown=move |_| start_swapping()
+                                            on:mouseup=move |_ev| {
+                                                leptos::logging::log!("mouseup, cell: {:?}, evt {:?}", cell, _ev);
+                                                swap()
+                                            }
+                                            on:touchstart=move |_| start_swapping()
+                                            on:touchend=move |_ev: leptos::ev::TouchEvent| {
+                                                // touchend target is the same as the target of the touchstart
+                                                // so i cant se the same logic as with mousedown/up
 
-                                                    if cell_a != cell_b {
-                                                        set_beehive.update(|bh| bh.swap(&cell_a, &cell_b));
-                                                        cnt_set.update(|val| * val+=1);
+                                                // get the touch position
+                                                let first_touch = _ev.changed_touches().item(0).expect("a touchmove event without any touches");
+
+                                                // get the cell over which the touchend was triggered
+                                                let doc: web_sys::Document = leptos::document();
+                                                let opt = doc.element_from_point(first_touch.client_x() as f32, first_touch.client_y() as f32);
+
+                                                if let Some(elt) = opt {
+                                                    // if it is a cell, swappable
+                                                    let class_list =  elt.class_list();
+                                                    if class_list.contains("cell") && class_list.contains("is-swappable") {
+                                                        // get its row-col attributes and swap with it
+                                                        let row = elt.get_attribute("row").expect("a swappable cell should have a row").parse::<usize>().expect("couldnt parse row");
+                                                        let col = elt.get_attribute("col").expect("a swappable cell should have a col").parse::<usize>().expect("couldnt parse col");
+                                                        let target_cell = Cell {row, col};
+                                                        leptos::logging::log!("swapping cell {:?} with cell {:?}", cell, &target_cell);
+                                                        swap_with(&target_cell);
                                                     }
-
-                                                    swap.update(|val| *val = None);
                                                 }
+                                            }
+                                            on:touchmove=move |_ev| {
+                                                leptos::logging::log!("touchmove, cell: {:?}, evt {:?}", cell, _ev);
+
+                                            }
+                                            on:touchcancel=move |_ev| {
+                                                leptos::logging::log!("touchcancel, evt {:?}, cell: {:?}", _ev, cell);
                                             }
                                             class="cell"
                                             class:is-green = move || color() == Color::Green
                                             class:is-yellow = move || color() == Color::Yellow
-                                            class:is-swap = move || candidate.get() == Some(cell)
+                                            class:is-swap = move || swap_candidate.get() == Some(cell)
+                                            class:is-swappable = move || color() != Color::Green
                                         >
                                             "" {move || beehive.get().get_shuffled_cell(&cell).unwrap().clone().to_uppercase().to_string()} ""
                                         </div>

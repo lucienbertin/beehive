@@ -6,6 +6,8 @@ body {
     position: relative;
     display: grid;
     font-size: 2rem;
+    touch-action: none;
+    margin: auto;
 }
 .cell {
     -webkit-touch-callout: none;
@@ -49,9 +51,6 @@ body {
 .offset {
     grid-column: span 1 / span 1;
 }
-.is-dragging .cell:hover {
+.is-dragging .cell.is-swappable:hover {
     opacity: .5;
-}
-.is-dragging .cell.is-green:hover {
-    opacity: 1;
 }

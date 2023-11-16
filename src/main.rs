@@ -19,34 +19,8 @@ use crate::{
 
 fn main() {
     use beehive_swap::ui::BeehiveSwapComponent;
-    // let dictionary = dictionary::Dictionary::new().unwrap();
-    leptos::logging::log!("retrieving beehive");
+
     let once = create_resource(|| (), fetch_beehive);
-    // let grid = GridBeehive::new(6, 6).recursive_generate(&dictionary, false).unwrap();
-    // let mut grid = GridBeehive::new(6, 6);
-    // grid.set_row(0, "__yeah".to_string());
-    // grid.set_row(1, "_h__so".to_string());
-    // grid.set_row(2, "sofa_t".to_string());
-    // grid.set_row(3, "t_r_i_".to_string());
-    // grid.set_row(4, "a_ex__".to_string());
-    // grid.set_row(5, "the___".to_string());
-    // let beehive: BeehiveSwap = match fetch_beehive().await? {
-    //     Ok(bh) => bh,
-    //     Err(()) => {
-    //         leptos::logging::log!("couldn't retrieve a beehive :'(");
-    //         let mut grid = GridBeehive::new(6, 6);
-    //         grid.set_row(0, "__yeah".to_string());
-    //         grid.set_row(1, "_h__so".to_string());
-    //         grid.set_row(2, "sofa_t".to_string());
-    //         grid.set_row(3, "t_r_i_".to_string());
-    //         grid.set_row(4, "a_ex__".to_string());
-    //         grid.set_row(5, "the___".to_string());
-
-    //         grid.into()
-    //     }
-    // };
-
-    leptos::logging::log!("grid got !");
     leptos::mount_to_body(move || {
         view! {
             {move || match once.get() {
@@ -59,6 +33,7 @@ fn main() {
         }
     })
 }
+
 
 // fn main() -> Result<(), ()> {
 //     let mut input = String::new();

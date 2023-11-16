@@ -628,7 +628,7 @@ pub mod ui {
                                         }
                                     }
                                 };
-                                
+
                                 match letter() {
                                     '_' => view! { <div class="empty-cell" /> },
                                     '\0' => view! { <div class="cell" /> },

@@ -34,7 +34,6 @@ fn main() {
     })
 }
 
-
 // fn main() -> Result<(), ()> {
 //     let mut input = String::new();
 //     println!("number of rows:");
